@@ -10,6 +10,9 @@
 #define  IMHT 16                  //image height
 #define  IMWD 16                  //image width
 
+#define ALIVE 255
+#define DEAD 0
+
 typedef unsigned char uchar;      //using uchar as shorthand
 
 port p_scl = XS1_PORT_1E;         //interface ports to orientation
@@ -60,6 +63,38 @@ void DataInStream(char infname[], chanend c_out)
   return;
 }
 
+int modulo(int a, int b) {
+  const int result = a % b;
+  return result >= 0 ? result : result + b;
+}
+
+int getLiveNeighbours(int x, int y, uchar board[IMHT][IMWD]) {
+    int liveNeighbours = 0;
+
+    for (int i = x - 1; i <= x + 1; i++) {
+        for (int j = y - 1; j <= y + 1; j++) {
+            if (!(i == x && j == y)) { // do not count the pixel itself
+                int neighbourX = modulo(i, IMWD);
+                int neighbourY = modulo(j, IMHT);
+
+                if (board[neighbourY][neighbourX] == ALIVE) liveNeighbours++;
+            }
+        }
+    }
+
+    return liveNeighbours;
+}
+
+uchar nextPixel(int liveNeighbours, uchar currentPixel) {
+    if (currentPixel == ALIVE) {
+        if (liveNeighbours < 2) return DEAD;
+        else if (liveNeighbours > 3) return DEAD;
+    }
+    else if (currentPixel == DEAD && liveNeighbours == 3) return ALIVE;
+
+    return currentPixel;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 // Start your implementation by changing this function to implement the game of life
@@ -71,10 +106,13 @@ void distributor(chanend c_in, chanend c_out, chanend fromAcc)
 {
   uchar val;
 
+  uchar board[IMHT][IMWD];
+  uchar newBoard[IMHT][IMWD];
+
   //Starting up and wait for tilting of the xCore-200 Explorer
   printf( "ProcessImage: Start, size = %dx%d\n", IMHT, IMWD );
-  printf( "Waiting for Board Tilt...\n" );
-  fromAcc :> int value;
+  //printf( "Waiting for Board Tilt...\n" );
+  //fromAcc :> int value;
 
   //Read in and do something with your image values..
   //This just inverts every pixel, but you should
@@ -83,7 +121,21 @@ void distributor(chanend c_in, chanend c_out, chanend fromAcc)
   for( int y = 0; y < IMHT; y++ ) {   //go through all lines
     for( int x = 0; x < IMWD; x++ ) { //go through each pixel per line
       c_in :> val;                    //read the pixel value
-      c_out <: (uchar)( val ^ 0xFF ); //send some modified pixel out
+      board[y][x] = val;
+    }
+  }
+
+  for( int y = 0; y < IMHT; y++ ) {   //go through all lines
+    for( int x = 0; x < IMWD; x++ ) { //go through each pixel per line                   //read the pixel value
+      int liveNeighbours = getLiveNeighbours(x, y, board);
+
+      newBoard[y][x] = nextPixel(liveNeighbours, board[y][x]);
+    }
+  }
+
+  for( int y = 0; y < IMHT; y++ ) {   //go through all lines
+    for( int x = 0; x < IMWD; x++ ) { //go through each pixel per line                   //read the pixel value
+      c_out <: newBoard[y][x]; //send some modified pixel out
     }
   }
   printf( "\nOne processing round completed...\n" );
