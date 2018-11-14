@@ -7,18 +7,22 @@
 #include "pgmIO.h"
 #include "i2c.h"
 
-#define  IMHT 16                  //image height
-#define  IMWD 16                  //image width
+#define INPUT_IMAGE "64x64.pgm"
+#define  IMHT 64                  //image height
+#define  IMWD 64                  //image width
+#define NUM_ROUNDS 47
 
 #define ALIVE 255
 #define DEAD 0
 
-#define NUM_ROUNDS 47
+//#define DEBUG_PRINTS
 
 typedef unsigned char uchar;      //using uchar as shorthand
 
 port p_scl = XS1_PORT_1E;         //interface ports to orientation
 port p_sda = XS1_PORT_1F;
+in port buttons = XS1_PORT_4E;
+out port leds = XS1_PORT_4F;
 
 #define FXOS8700EQ_I2C_ADDR 0x1E  //register addresses for orientation
 #define FXOS8700EQ_XYZ_DATA_CFG_REG 0x0E
@@ -31,12 +35,32 @@ port p_sda = XS1_PORT_1F;
 #define FXOS8700EQ_OUT_Z_MSB 0x5
 #define FXOS8700EQ_OUT_Z_LSB 0x6
 
+
+void showLEDs(out port p, int pattern) {
+    //1st bit...separate green LED
+    //2nd bit...blue LED
+    //3rd bit...green LED
+    //4th bit...red LED
+    p <: pattern;
+}
+
+
+void buttonListener(in port b, chanend toDistributor) {
+  int r;
+  while (1) {
+    b when pinseq(15)  :> r;    // check that no button is pressed
+    b when pinsneq(15) :> r;    // check if some buttons are pressed
+    if ((r==13) || (r==14))     // if either button is pressed
+    toDistributor <: r;         // send button pattern to userAnt
+  }
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 // Read Image from PGM file from path infname[] to channel c_out
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void DataInStream(char infname[], chanend c_out)
+void readImage(char infname[], uchar board[IMHT][IMWD])
 {
   int res;
   uchar line[ IMWD ];
@@ -53,10 +77,14 @@ void DataInStream(char infname[], chanend c_out)
   for( int y = 0; y < IMHT; y++ ) {
     _readinline( line, IMWD );
     for( int x = 0; x < IMWD; x++ ) {
-      c_out <: line[ x ];
-      printf( "-%4.1d ", line[ x ] ); //show image values
+        board[y][x] = line[x];
+#ifdef DEBUG_PRINTS
+        printf( "-%4.1d ", line[ x ] ); //show image values
+#endif
     }
+#ifdef DEBUG_PRINTS
     printf( "\n" );
+#endif
   }
 
   //Close PGM image file
@@ -99,73 +127,17 @@ uchar nextPixel(int liveNeighbours, uchar currentPixel) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
-// Start your implementation by changing this function to implement the game of life
-// by farming out parts of the image to worker threads who implement it...
-// Currently the function just inverts the image
-//
-/////////////////////////////////////////////////////////////////////////////////////////
-void distributor(chanend c_in, chanend c_out, chanend fromAcc)
-{
-  uchar val;
-
-  uchar boards[2][IMHT][IMWD];
-
-  //Starting up and wait for tilting of the xCore-200 Explorer
-  printf( "ProcessImage: Start, size = %dx%d\n", IMHT, IMWD );
-  printf( "Waiting for Board Tilt...\n" );
-  fromAcc :> int value;
-
-  //Read in and do something with your image values..
-  //This just inverts every pixel, but you should
-  //change the image according to the "Game of Life"
-  printf( "Processing...\n" );
-  for( int y = 0; y < IMHT; y++ ) {   //go through all lines
-    for( int x = 0; x < IMWD; x++ ) { //go through each pixel per line
-      c_in :> val;                    //read the pixel value
-      boards[0][y][x] = val;
-    }
-  }
-
-  int round = 0;
-  for (; round < NUM_ROUNDS; round++) {
-      int tilted;
-      fromAcc :> tilted;
-      while (tilted) {
-          fromAcc :> tilted;
-      }
-
-      for( int y = 0; y < IMHT; y++ ) {   //go through all lines
-          for( int x = 0; x < IMWD; x++ ) { //go through each pixel per line                   //read the pixel value
-              int boardNo = round % 2;
-              int liveNeighbours = getLiveNeighbours(x, y, boards[boardNo]);
-
-              boards[(round + 1) % 2][y][x] = nextPixel(liveNeighbours, boards[boardNo][y][x]);
-          }
-      }
-
-      printf("Turn %d complete\n", round);
-  }
-
-  for( int y = 0; y < IMHT; y++ ) {   //go through all lines
-    for( int x = 0; x < IMWD; x++ ) { //go through each pixel per line                   //read the pixel value
-      c_out <: boards[round % 2][y][x]; //send some modified pixel out
-    }
-  }
-  printf( "\nOne processing round completed...\n" );
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-//
 // Write pixel stream from channel c_in to PGM image file
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void DataOutStream(char outfname[], chanend c_in)
+void writeImage(char outfname[], uchar board[IMHT][IMWD])
 {
   int res;
   uchar line[ IMWD ];
 
   //Open PGM file
   printf( "DataOutStream: Start...\n" );
+
   res = _openoutpgm( outfname, IMWD, IMHT );
   if( res ) {
     printf( "DataOutStream: Error opening %s\n.", outfname );
@@ -175,16 +147,102 @@ void DataOutStream(char outfname[], chanend c_in)
   //Compile each line of the image and write the image line-by-line
   for( int y = 0; y < IMHT; y++ ) {
     for( int x = 0; x < IMWD; x++ ) {
-      c_in :> line[ x ];
+      line[x] = board[y][x];
     }
     _writeoutline( line, IMWD );
+#ifdef DEBUG_PRINTS
     printf( "DataOutStream: Line written...\n" );
+#endif
   }
 
   //Close the PGM image
   _closeoutpgm();
   printf( "DataOutStream: Done...\n" );
+
   return;
+}
+
+void exportBoard(uchar board[IMHT][IMWD], int round) {
+    showLEDs(leds, 0b1000);
+
+    char fileName[64];
+    sprintf(fileName, "out_%d.pgm", round);
+    writeImage(fileName, board);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+// Start your implementation by changing this function to implement the game of life
+// by farming out parts of the image to worker threads who implement it...
+// Currently the function just inverts the image
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+void distributor(chanend fromAcc, chanend fromButtons)
+{
+  uchar boards[2][IMHT][IMWD];
+
+  //Starting up and wait for tilting of the xCore-200 Explorer
+  printf( "ProcessImage: Start, size = %dx%d\n", IMHT, IMWD );
+
+  printf("Waiting for read button press to begin...\n");
+  int button;
+  fromButtons :> button;
+  while (button != 14) {
+      fromButtons :> button;
+  }
+
+  //Read in and do something with your image values..
+  //This just inverts every pixel, but you should
+  //change the image according to the "Game of Life"
+  printf( "Processing...\n" );
+  showLEDs(leds, 0b0100);
+  readImage("64x64.pgm", boards[0]);
+
+  int round = 0;
+  while (round < NUM_ROUNDS) {
+      int currentLED = 0b0000;
+
+      select {
+          case fromAcc :> int tilted:
+              if (currentLED != (0b0010 | round % 2)) {
+                  currentLED = 0b0010 | round % 2;
+                  showLEDs(leds, currentLED);
+              }
+
+              fromAcc :> tilted;
+
+              break;
+
+          case fromButtons :> int button:
+              if (button == 13) {
+                  exportBoard(boards[round % 2], round);
+              }
+
+              break;
+
+          default:
+              showLEDs(leds, round % 2);
+              for( int y = 0; y < IMHT; y++ ) {   //go through all lines
+                  for( int x = 0; x < IMWD; x++ ) { //go through each pixel per line                   //read the pixel value
+                      int boardNo = round % 2;
+                      int liveNeighbours = getLiveNeighbours(x, y, boards[boardNo]);
+
+                      boards[(round + 1) % 2][y][x] = nextPixel(liveNeighbours, boards[boardNo][y][x]);
+                  }
+              }
+              ++round;
+
+              break;
+
+      }
+
+      printf("Turn %d complete\n", round);
+  }
+
+  exportBoard(boards[round % 2], round);
+  showLEDs(leds, 0b0000);
+
+  printf( "\nDone.\n" );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -195,7 +253,6 @@ void DataOutStream(char outfname[], chanend c_in)
 void orientation( client interface i2c_master_if i2c, chanend toDist) {
   i2c_regop_res_t result;
   char status_data = 0;
-  int tilted = 0;
 
   // Configure FXOS8700EQ
   result = i2c.write_reg(FXOS8700EQ_I2C_ADDR, FXOS8700EQ_XYZ_DATA_CFG_REG, 0x01);
@@ -221,12 +278,14 @@ void orientation( client interface i2c_master_if i2c, chanend toDist) {
     int x = read_acceleration(i2c, FXOS8700EQ_OUT_X_MSB);
 
     //send signal to distributor after first tilt
-    if (!tilted && x > 30) {
-        tilted = 1 - tilted;
+    if (x > 30) {
         toDist <: 1;
-    }
-    else {
-        toDist <: (x > 30);
+        while (x > 30) {
+            //get new x-axis tilt value
+            x = read_acceleration(i2c, FXOS8700EQ_OUT_X_MSB);
+        }
+
+        toDist <: 0;
     }
   }
 }
@@ -240,16 +299,13 @@ int main(void) {
 
 i2c_master_if i2c[1];               //interface to orientation
 
-char infname[] = "test.pgm";     //put your input image path here
-char outfname[] = "testout.pgm"; //put your output image path here
-chan c_inIO, c_outIO, c_control;    //extend your channel definitions here
+chan c_control, c_distribButtons;    //extend your channel definitions here
 
 par {
     i2c_master(i2c, 1, p_scl, p_sda, 10);   //server thread providing orientation data
     orientation(i2c[0],c_control);        //client thread reading orientation data
-    DataInStream(infname, c_inIO);          //thread to read in a PGM image
-    DataOutStream(outfname, c_outIO);       //thread to write out a PGM image
-    distributor(c_inIO, c_outIO, c_control);//thread to coordinate work on image
+    distributor(c_control, c_distribButtons);//thread to coordinate work on image
+    buttonListener(buttons, c_distribButtons);
   }
 
   return 0;

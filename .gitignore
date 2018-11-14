@@ -2,3 +2,4 @@
 .settings/
 bin/
 testout.pgm
+*.pgm
