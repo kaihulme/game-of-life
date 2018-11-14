@@ -13,6 +13,8 @@
 #define ALIVE 255
 #define DEAD 0
 
+#define NUM_ROUNDS 47
+
 typedef unsigned char uchar;      //using uchar as shorthand
 
 port p_scl = XS1_PORT_1E;         //interface ports to orientation
@@ -106,13 +108,12 @@ void distributor(chanend c_in, chanend c_out, chanend fromAcc)
 {
   uchar val;
 
-  uchar board[IMHT][IMWD];
-  uchar newBoard[IMHT][IMWD];
+  uchar boards[2][IMHT][IMWD];
 
   //Starting up and wait for tilting of the xCore-200 Explorer
   printf( "ProcessImage: Start, size = %dx%d\n", IMHT, IMWD );
-  //printf( "Waiting for Board Tilt...\n" );
-  //fromAcc :> int value;
+  printf( "Waiting for Board Tilt...\n" );
+  fromAcc :> int value;
 
   //Read in and do something with your image values..
   //This just inverts every pixel, but you should
@@ -121,21 +122,33 @@ void distributor(chanend c_in, chanend c_out, chanend fromAcc)
   for( int y = 0; y < IMHT; y++ ) {   //go through all lines
     for( int x = 0; x < IMWD; x++ ) { //go through each pixel per line
       c_in :> val;                    //read the pixel value
-      board[y][x] = val;
+      boards[0][y][x] = val;
     }
+  }
+
+  int round = 0;
+  for (; round < NUM_ROUNDS; round++) {
+      int tilted;
+      fromAcc :> tilted;
+      while (tilted) {
+          fromAcc :> tilted;
+      }
+
+      for( int y = 0; y < IMHT; y++ ) {   //go through all lines
+          for( int x = 0; x < IMWD; x++ ) { //go through each pixel per line                   //read the pixel value
+              int boardNo = round % 2;
+              int liveNeighbours = getLiveNeighbours(x, y, boards[boardNo]);
+
+              boards[(round + 1) % 2][y][x] = nextPixel(liveNeighbours, boards[boardNo][y][x]);
+          }
+      }
+
+      printf("Turn %d complete\n", round);
   }
 
   for( int y = 0; y < IMHT; y++ ) {   //go through all lines
     for( int x = 0; x < IMWD; x++ ) { //go through each pixel per line                   //read the pixel value
-      int liveNeighbours = getLiveNeighbours(x, y, board);
-
-      newBoard[y][x] = nextPixel(liveNeighbours, board[y][x]);
-    }
-  }
-
-  for( int y = 0; y < IMHT; y++ ) {   //go through all lines
-    for( int x = 0; x < IMWD; x++ ) { //go through each pixel per line                   //read the pixel value
-      c_out <: newBoard[y][x]; //send some modified pixel out
+      c_out <: boards[round % 2][y][x]; //send some modified pixel out
     }
   }
   printf( "\nOne processing round completed...\n" );
@@ -208,11 +221,12 @@ void orientation( client interface i2c_master_if i2c, chanend toDist) {
     int x = read_acceleration(i2c, FXOS8700EQ_OUT_X_MSB);
 
     //send signal to distributor after first tilt
-    if (!tilted) {
-      if (x>30) {
+    if (!tilted && x > 30) {
         tilted = 1 - tilted;
         toDist <: 1;
-      }
+    }
+    else {
+        toDist <: (x > 30);
     }
   }
 }
