@@ -7,10 +7,13 @@
 #include "pgmIO.h"
 #include "i2c.h"
 
-#define INPUT_IMAGE "64x64.pgm"   // image for processing
-#define  IMHT 64                  // image height
-#define  IMWD 64                  // image width
-#define NUM_ROUNDS 47             // number of processing rounds
+#define INPUT_IMAGE "16x16.pgm"   // image for processing
+#define IMHT 16               // image height
+#define IMWD 16                  // image width
+#define NUM_ROUNDS 100        // number of processing rounds
+#define NUM_WORKERS 4
+#define WKHT (IMHT / NUM_WORKERS)
+
 
 #define ALIVE 255                 // def for alive cells
 #define DEAD 0                    // def for dead cells
@@ -19,10 +22,10 @@
 
 typedef unsigned char uchar;      // using uchar as shorthand
 
-port p_scl = XS1_PORT_1E;         // interface ports for orientation
-port p_sda = XS1_PORT_1F;
-in port buttons = XS1_PORT_4E;    // interface ports for buttons
-out port leds = XS1_PORT_4F;      // interface ports for LEDs
+on tile[0]: port p_scl = XS1_PORT_1E;         // interface ports for orientation
+on tile[0]: port p_sda = XS1_PORT_1F;
+on tile[0]: in port buttons = XS1_PORT_4E;    // interface ports for buttons
+on tile[0]: out port leds = XS1_PORT_4F;      // interface ports for LEDs
 
 #define FXOS8700EQ_I2C_ADDR 0x1E            // register addresses for orientation
 #define FXOS8700EQ_XYZ_DATA_CFG_REG 0x0E
@@ -105,7 +108,7 @@ int modulo(int a, int b) {
 }
 
 // function for getting number of alive neighbours for a given cell
-int getLiveNeighbours(int x, int y, uchar board[IMHT][IMWD]) {
+int getLiveNeighbours(int x, int y, uchar board[WKHT + 2][IMWD]) {
 
     int liveNeighbours = 0;
 
@@ -113,7 +116,7 @@ int getLiveNeighbours(int x, int y, uchar board[IMHT][IMWD]) {
         for (int j = y - 1; j <= y + 1; j++) {
             if (!(i == x && j == y)) { // do not count the pixel itself
                 int neighbourX = modulo(i, IMWD);
-                int neighbourY = modulo(j, IMHT);
+                int neighbourY = j;
                 if (board[neighbourY][neighbourX] == ALIVE) liveNeighbours++;
             }
         }
@@ -142,11 +145,11 @@ void writeImage(char outfname[], uchar board[IMHT][IMWD]) {
   int res;
   uchar line[ IMWD ];
 
-  printf("DataOutStream: Start...\n");
+  printf("Writing to file %s...\n", outfname);
 
   res = _openoutpgm(outfname, IMWD, IMHT); // open PGM file
   if(res) {
-    printf("DataOutStream: Error opening %s\n.", outfname);
+    printf("Error opening %s\n.", outfname);
     return;
   }
 
@@ -159,7 +162,7 @@ void writeImage(char outfname[], uchar board[IMHT][IMWD]) {
 
     _writeoutline(line, IMWD);
     #ifdef DEBUG_PRINTS
-        printf("DataOutStream: Line written...\n");
+        printf("Writing to file %s...\n", outfname);
     #endif
 
   }
@@ -176,15 +179,77 @@ void exportBoard(uchar board[IMHT][IMWD], int round) {
 
     showLEDs(leds, 0b1000);                   // shows blue LED when writing
     char fileName[64];
-    sprintf(fileName, "out_%d.pgm", round);   // creates a file name for current round
+    sprintf(fileName, "%d_%s", round, INPUT_IMAGE);   // creates a file name for current round
     writeImage(fileName, board);              // writes image to PGM file
 
 }
 
-// function for distribution of work
-void distributor(chanend fromAcc, chanend fromButtons) {
+void worker(chanend fromDistributor) {
+    for (int round = 0; round < NUM_ROUNDS; round++) {
+        uchar board[WKHT + 2][IMWD];
 
-  uchar boards[2][IMHT][IMWD];
+        for (int row = 0; row < WKHT + 2; row++) {
+            for (int col = 0; col < IMWD; col++) {
+                fromDistributor :> board[row][col];
+            }
+        }
+
+        for (int row = 1; row < WKHT + 1; row++) {
+            for (int col = 0; col < IMWD; col++) {
+                int liveNeighbours = getLiveNeighbours(col, row, board);
+                uchar next = nextPixel(liveNeighbours, board[row][col]);
+                fromDistributor <: next;
+            }
+        }
+
+    }
+}
+
+void splitBoard(chanend toWorkers[NUM_WORKERS], uchar board[IMHT][IMWD]) {
+    for (int i = 0; i < NUM_WORKERS; i++) {
+        int start_row = i * WKHT - 1;
+        int end_row = (i + 1) * WKHT;
+
+        for (int row = start_row; row <= end_row; row++) {
+            for (int col = 0; col < IMWD; col++) {
+                toWorkers[i] <: board[modulo(row, IMHT)][modulo(col, IMWD)];
+            }
+        }
+    }
+}
+
+void timing(chanend fromDistributor) {
+    timer t;
+    int timerOn = 1;
+    float roundTime;
+    float totalTime = 0.0f;
+    float period = 100000000;
+
+    while (timerOn) {
+        fromDistributor :> timerOn;
+
+        if (!timerOn) {
+            fromDistributor <: totalTime;
+        }
+        else {
+            uint32_t startTime, endTime;
+
+            t :> startTime;
+            fromDistributor :> timerOn;
+            t :> endTime;
+
+            roundTime = (endTime - startTime) / period;
+            fromDistributor <: roundTime;
+            totalTime += roundTime;
+        }
+    }
+}
+
+// function for distribution of work
+void distributor(chanend fromAcc, chanend fromButtons, chanend toWorkers[NUM_WORKERS],
+        chanend fromTiming) {
+
+  uchar board[IMHT][IMWD];
 
   // start up and wait for button SW1 press
   printf( "ProcessImage: Start, size = %dx%d\n", IMHT, IMWD );
@@ -198,7 +263,7 @@ void distributor(chanend fromAcc, chanend fromButtons) {
   // begin processing
   printf( "Processing...\n" );
   showLEDs(leds, 0b0100);             // shows green LE when processing
-  readImage("64x64.pgm", boards[0]);  // reads PGM image to first board 2D array
+  readImage(INPUT_IMAGE, board);  // reads PGM image to first board 2D array
 
   int round = 0;                      // set initial round counter to 0
 
@@ -221,38 +286,50 @@ void distributor(chanend fromAcc, chanend fromButtons) {
 
           case fromButtons :> int button:
 
-              if (button == 13) exportBoard(boards[round % 2], round);
+              if (button == 13) exportBoard(board, round);
 
               break;
 
           default:
 
+              fromTiming <: 1;
               showLEDs(leds, round % 2);
 
-              for( int y = 0; y < IMHT; y++ ) {
-                  for( int x = 0; x < IMWD; x++ ) {
+              splitBoard(toWorkers, board);
 
-                      int boardNo = round % 2;
-                      int liveNeighbours = getLiveNeighbours(x, y, boards[boardNo]);
-                      boards[(round + 1) % 2][y][x] = nextPixel(liveNeighbours, boards[boardNo][y][x]);
+              for (int row = 0; row < WKHT; row++) {
+                  for (int col = 0; col < IMWD; col++) {
+                      for (int worker = 0; worker < NUM_WORKERS; worker++) {
+                          uchar cell;
+                          toWorkers[worker] :> cell;
 
+                          board[row + (WKHT * worker)][col] = cell;
+                      }
                   }
               }
 
               ++round;
 
+              fromTiming <: 1;
+
+              float roundTime;
+              fromTiming :> roundTime;
+
+              printf("Turn %d complete in %f\n", round, roundTime);
+
               break;
 
       }
 
-      printf("Turn %d complete\n", round);
-
   }
 
-  exportBoard(boards[round % 2], round);
+  exportBoard(board, round);
   showLEDs(leds, 0b0000);
 
-  printf( "\nDone.\n" );
+  fromTiming <: 0;
+  float totalTime;
+  fromTiming :> totalTime;
+  printf( "\nDone (total time: %f, average: %f).\n", totalTime, totalTime / NUM_ROUNDS);
 
 }
 
@@ -298,13 +375,18 @@ void orientation (client interface i2c_master_if i2c, chanend toDist) {
 int main(void) {
 
   i2c_master_if i2c[1];               // interface to orientation
-  chan c_control, c_distribButtons;   // channel definitions
+  chan c_control, c_distribButtons, c_distribWorkers[NUM_WORKERS], c_timing;   // channel definitions
 
   par {
-    i2c_master(i2c, 1, p_scl, p_sda, 10);         //server thread providing orientation data
-    orientation(i2c[0],c_control);                //client thread reading orientation data
-    distributor(c_control, c_distribButtons);     //thread to coordinate work on image
-    buttonListener(buttons, c_distribButtons);
+    on tile[0]: i2c_master(i2c, 1, p_scl, p_sda, 10);         //server thread providing orientation data
+    on tile[0]: orientation(i2c[0],c_control);                //client thread reading orientation data
+    on tile[0]: buttonListener(buttons, c_distribButtons);
+
+    on tile[1]: timing(c_timing);
+    on tile[0]: distributor(c_control, c_distribButtons, c_distribWorkers, c_timing);     //thread to coordinate work on image
+    par (int w = 0; w < NUM_WORKERS; w++) {
+        on tile[w % 2]: worker(c_distribWorkers[w]);
+    }
   }
 
   return 0;
