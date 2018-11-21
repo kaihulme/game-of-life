@@ -7,9 +7,9 @@
 #include "pgmIO.h"
 #include "i2c.h"
 
-#define INPUT_IMAGE "128x128.pgm"   // image for processing
-#define IMHT 128               // image height
-#define IMWD 128                  // image width
+#define INPUT_IMAGE "512x512.pgm"   // image for processing
+#define IMHT 512              // image height
+#define IMWD 512                  // image width
 #define NUM_ROUNDS 100        // number of processing rounds
 #define NUM_WORKERS 4
 #define WKHT (IMHT / NUM_WORKERS)
@@ -93,111 +93,103 @@ void showLEDs(out port p, int pattern) {
 
 // function for listening for button presses
 void buttonListener(in port b, chanend toDistributor) {
+    int r;
 
-  int r;
-
-  while (1) {
-    b when pinseq(15)  :> r;    // check that no button is pressed
-    b when pinsneq(15) :> r;    // check if some buttons are pressed
-    if ((r==13) || (r==14)) {   // if either button is pressed
-      toDistributor <: r;       // send button pattern to userAnt
+    while (1) {
+        b when pinseq(15)  :> r;    // check that no button is pressed
+        b when pinsneq(15) :> r;    // check if some buttons are pressed
+        if ((r==13) || (r==14)) {   // if either button is pressed
+            toDistributor <: r;       // send button pattern to userAnt
+        }
     }
-  }
-
 }
 
 // function for reading in pgm image file
 void readImage(char infname[], b_int board[IMHT][WKWD]) {
 
-  int res;
-  uchar line[ IMWD ];
+    int res;
+    uchar line[ IMWD ];
 
-  printf("Reading file: %s...\n", infname);
+    printf("Reading file: %s...\n", infname);
 
-  res = _openinpgm( infname, IMWD, IMHT ); // open PGM file
-  if(res) {
-    printf("Error openening file %s\n.", infname);
-    return;
-  }
+    res = _openinpgm( infname, IMWD, IMHT ); // open PGM file
+    if(res) {
+        printf("Error openening file %s\n.", infname);
+        return;
+    }
 
-  // read image line-by-line and send byte by byte to channel c_out
-  for(int y=0; y<IMHT; y++) {
+    // read image line-by-line and send byte by byte to channel c_out
+    for(int y=0; y<IMHT; y++) {
 
     _readinline( line, IMWD );
 
-    for (int x = 0; x < WKWD; x++) {
-        b_int packed = 0;
-        for (int i = 0; i < INT_SIZE; i++) {
-            packed = setCell(packed, line[x * INT_SIZE + i], i);
+        for (int x = 0; x < WKWD; x++) {
+            b_int packed = 0;
+            for (int i = 0; i < INT_SIZE; i++) {
+                packed = setCell(packed, line[x * INT_SIZE + i], i);
+            }
+            board[y][x] = packed;
+
+
+#ifdef DEBUG_PRINTS
+            printf("%u ", packed); //show image values
+#endif
         }
-        board[y][x] = packed;
-
-
-        #ifdef DEBUG_PRINTS
-          printf("%u ", packed); //show image values
-        #endif
+#ifdef DEBUG_PRINTS
+    printf("\n");
+#endif
     }
-    #ifdef DEBUG_PRINTS
-      printf("\n");
-    #endif
 
-  }
+    _closeinpgm(); // close PGM image file
+    printf("File read.\n");
 
-  _closeinpgm(); // close PGM image file
-  printf("File read.\n");
-  return;
-
+    return;
 }
 
 // function for writing image pgm image file
 void writeImage(char outfname[], b_int board[IMHT][WKWD]) {
-  int res;
+    int res;
 
-  printf("Writing to file %s...\n", outfname);
+    printf("Writing to file %s...\n", outfname);
 
-  res = _openoutpgm(outfname, IMWD, IMHT); // open PGM file
-  if(res) {
-    printf("Error opening %s\n.", outfname);
+    res = _openoutpgm(outfname, IMWD, IMHT); // open PGM file
+    if(res) {
+        printf("Error opening %s\n.", outfname);
+        return;
+    }
+
+    // compile each line of the image and write the image line-by-line
+    for(int y = 0; y < IMHT; y++) {
+        uchar line[ IMWD ];
+
+        for (int x = 0; x < WKWD; x++) {
+            b_int packed = board[y][x];
+
+#ifdef DEBUG_PRINTS
+            printf("%u ", packed);
+#endif
+
+            for (int i = 0; i < INT_SIZE; i++) {
+                line[(x * INT_SIZE) + i] = getCell(packed, i);
+            }
+        }
+
+#ifdef DEBUG_PRINTS
+        printf("\n");
+#endif
+        _writeoutline(line, IMWD);
+    }
+
+    _closeoutpgm(); // close PGM file
+    printf("Successfully written to file.");
+
     return;
-  }
-
-  // compile each line of the image and write the image line-by-line
-  for(int y = 0; y < IMHT; y++) {
-      uchar line[ IMWD ];
-
-     for (int x = 0; x < WKWD; x++) {
-         b_int packed = board[y][x];
-
-#ifdef DEBUG_PRINTS
-         printf("%u ", packed);
-#endif
-
-         for (int i = 0; i < INT_SIZE; i++) {
-             line[(x * INT_SIZE) + i] = getCell(packed, i);
-         }
-     }
-
-#ifdef DEBUG_PRINTS
-     printf("\n");
-#endif
-
-    _writeoutline(line, IMWD);
-
-  }
-
-  _closeoutpgm(); // close PGM file
-  printf("Successfully written to file.");
-
-  return;
-
 }
 
-// function for returning a modulo b
+// returns a mod b, works as intended with negative numbers
 int modulo(int a, int b) {
-
-  const int result = a % b;
-  return result >= 0 ? result : result + b;
-
+    const int result = a % b;
+    return result >= 0 ? result : result + b;
 }
 
 // function for getting number of alive neighbours for a given cell
@@ -205,15 +197,17 @@ int getLiveNeighbours(int x, int y, b_int board[WKHT + 2][WKWD]) {
 
     int liveNeighbours = 0;
 
+    // go from one before the cell to one after
     for (int i = x - 1; i <= x + 1; i++) {
         for (int j = y - 1; j <= y + 1; j++) {
-            if (!(i == x && j == y)) { // do not count the pixel itself
-                int neighbourX = modulo(i, IMWD);
-                int neighbourY = j;
+            if (!(i == x && j == y)) { // do not count the cell itself
+                int neighbourX = modulo(i, IMWD); // modulus used to allow wrapping around
+                int neighbourY = j; // modulus not needed due to extra rows being above and below always
 
                 int packedLocation = neighbourX / INT_SIZE;
 
-                if (getCell(board[neighbourY][packedLocation], neighbourX % INT_SIZE) == ALIVE) liveNeighbours++;
+                if (getCell(board[neighbourY][packedLocation], neighbourX % INT_SIZE) == ALIVE)
+                    liveNeighbours++;
             }
         }
     }
@@ -277,6 +271,7 @@ void worker(chanend fromDistributor) {
     }
 }
 
+// splits the board between workers and dispatches the data to them
 void splitBoard(chanend toWorkers[NUM_WORKERS], b_int board[IMHT][WKWD]) {
     for (int i = 0; i < NUM_WORKERS; i++) {
         int start_row = (i * WKHT) - 1;
@@ -290,6 +285,7 @@ void splitBoard(chanend toWorkers[NUM_WORKERS], b_int board[IMHT][WKWD]) {
     }
 }
 
+// loop for timing rounds
 void timing(chanend fromDistributor) {
     timer t;
     int timerOn = 1;
@@ -301,6 +297,7 @@ void timing(chanend fromDistributor) {
         fromDistributor :> timerOn;
 
         if (!timerOn) {
+            // rounds are complete, send total round time
             fromDistributor <: totalTime;
         }
         else {
@@ -320,26 +317,25 @@ void timing(chanend fromDistributor) {
 // function for distribution of work
 void distributor(chanend fromAcc, chanend fromButtons, chanend toWorkers[NUM_WORKERS],
         chanend fromTiming) {
+    b_int board[IMHT][WKWD];
 
-  b_int board[IMHT][WKWD];
-
-  // start up and wait for button SW1 press
-  printf( "ProcessImage: Start, size = %dx%d\n", IMHT, IMWD );
-  printf("Waiting for read button press to begin...\n");
-  int button;
-  fromButtons :> button;      // gets button press
-  while (button != 14) {      // if button press is not SW1 ...
+    // start up and wait for button SW1 press
+    printf( "ProcessImage: Start, size = %dx%d\n", IMHT, IMWD );
+    printf("Waiting for read button press to begin...\n");
+    int button;
+    fromButtons :> button;      // gets button press
+    while (button != 14) {      // if button press is not SW1 ...
       fromButtons :> button;  // ... wait for button SW1 press
-  }
+    }
 
-  // begin processing
-  printf( "Processing...\n" );
-  showLEDs(leds, 0b0100);             // shows green LE when processing
-  readImage(INPUT_IMAGE, board);  // reads PGM image to first board 2D array
+    // begin processing
+    printf( "Processing...\n" );
+    showLEDs(leds, 0b0100);             // shows green LE when processing
+    readImage(INPUT_IMAGE, board);  // reads PGM image to first board 2D array
 
-  int round = 0;                      // set initial round counter to 0
+    int round = 0;                      // set initial round counter to 0
 
-  while (round < NUM_ROUNDS) {
+    while (round < NUM_ROUNDS) {
 
       int currentLED = 0b0000;
 
@@ -392,74 +388,68 @@ void distributor(chanend fromAcc, chanend fromButtons, chanend toWorkers[NUM_WOR
 
       }
 
-  }
+    }
 
-  exportBoard(board, round);
-  showLEDs(leds, 0b0000);
+    exportBoard(board, round);
+    showLEDs(leds, 0b0000);
 
-  fromTiming <: 0;
-  float totalTime;
-  fromTiming :> totalTime;
-  printf( "\nDone (total time: %f, average: %f).\n", totalTime, totalTime / NUM_ROUNDS);
-
+    fromTiming <: 0;
+    float totalTime;
+    fromTiming :> totalTime;
+    printf( "\nDone (total time: %f, average: %f).\n", totalTime, totalTime / NUM_ROUNDS);
 }
 
 // function for board orientation handeling
 void orientation (client interface i2c_master_if i2c, chanend toDist) {
 
-  i2c_regop_res_t result;
-  char status_data = 0;
+    i2c_regop_res_t result;
+    char status_data = 0;
 
-  // configure FXOS8700EQ
-  result = i2c.write_reg(FXOS8700EQ_I2C_ADDR, FXOS8700EQ_XYZ_DATA_CFG_REG, 0x01);
-  if (result != I2C_REGOP_SUCCESS) printf("I2C write reg failed\n");
+    // configure FXOS8700EQ
+    result = i2c.write_reg(FXOS8700EQ_I2C_ADDR, FXOS8700EQ_XYZ_DATA_CFG_REG, 0x01);
+    if (result != I2C_REGOP_SUCCESS) printf("I2C write reg failed\n");
 
-  // enable FXOS8700EQ
-  result = i2c.write_reg(FXOS8700EQ_I2C_ADDR, FXOS8700EQ_CTRL_REG_1, 0x01);
-  if (result != I2C_REGOP_SUCCESS) printf("I2C write reg failed\n");
+    // enable FXOS8700EQ
+    result = i2c.write_reg(FXOS8700EQ_I2C_ADDR, FXOS8700EQ_CTRL_REG_1, 0x01);
+    if (result != I2C_REGOP_SUCCESS) printf("I2C write reg failed\n");
 
-  // probe the orientation x-axis forever
-  while (1) {
+    // probe the orientation x-axis forever
+    while (1) {
+        // check until new orientation data is available
+        do {
+          status_data = i2c.read_reg(FXOS8700EQ_I2C_ADDR, FXOS8700EQ_DR_STATUS, result);
+        } while (!status_data & 0x08);
 
-    // check until new orientation data is available
-    do {
-      status_data = i2c.read_reg(FXOS8700EQ_I2C_ADDR, FXOS8700EQ_DR_STATUS, result);
-    } while (!status_data & 0x08);
+        // get new x-axis tilt value
+        int x = read_acceleration(i2c, FXOS8700EQ_OUT_X_MSB);
 
-    // get new x-axis tilt value
-    int x = read_acceleration(i2c, FXOS8700EQ_OUT_X_MSB);
-
-    // send signal to distributor after first tilt
-    if (x > 30) {
-        toDist <: 1;
-        while (x > 30) {
-            x = read_acceleration(i2c, FXOS8700EQ_OUT_X_MSB); // get new x-axis tilt value
+        // send signal to distributor after first tilt
+        if (x > 30) {
+            toDist <: 1;
+            while (x > 30) {
+                x = read_acceleration(i2c, FXOS8700EQ_OUT_X_MSB); // get new x-axis tilt value
+            }
+            toDist <: 0;
         }
-        toDist <: 0;
     }
-
-  }
-
 }
 
 // main function for concurrent orchestration of functions
 int main(void) {
+    i2c_master_if i2c[1];               // interface to orientation
+    chan c_control, c_distribButtons, c_distribWorkers[NUM_WORKERS], c_timing;   // channel definitions
 
-  i2c_master_if i2c[1];               // interface to orientation
-  chan c_control, c_distribButtons, c_distribWorkers[NUM_WORKERS], c_timing;   // channel definitions
+    par {
+        on tile[0]: i2c_master(i2c, 1, p_scl, p_sda, 10);         //server thread providing orientation data
+        on tile[0]: orientation(i2c[0],c_control);                //client thread reading orientation data
+        on tile[0]: buttonListener(buttons, c_distribButtons);
 
-  par {
-    on tile[0]: i2c_master(i2c, 1, p_scl, p_sda, 10);         //server thread providing orientation data
-    on tile[0]: orientation(i2c[0],c_control);                //client thread reading orientation data
-    on tile[0]: buttonListener(buttons, c_distribButtons);
-
-    on tile[1]: timing(c_timing);
-    on tile[0]: distributor(c_control, c_distribButtons, c_distribWorkers, c_timing);     //thread to coordinate work on image
-    par (int w = 0; w < NUM_WORKERS; w++) {
-        on tile[w % 2]: worker(c_distribWorkers[w]);
+        on tile[1]: timing(c_timing);
+        on tile[0]: distributor(c_control, c_distribButtons, c_distribWorkers, c_timing);     //thread to coordinate work on image
+        par (int w = 0; w < NUM_WORKERS; w++) {
+            on tile[w % 2]: worker(c_distribWorkers[w]);
+        }
     }
-  }
 
-  return 0;
-
+    return 0;
 }
