@@ -7,13 +7,22 @@
 #include "pgmIO.h"
 #include "i2c.h"
 
-#define INPUT_IMAGE "16x16.pgm"   // image for processing
-#define IMHT 16               // image height
-#define IMWD 16                  // image width
+#define INPUT_IMAGE "128x128.pgm"   // image for processing
+#define IMHT 128               // image height
+#define IMWD 128                  // image width
 #define NUM_ROUNDS 100        // number of processing rounds
 #define NUM_WORKERS 4
 #define WKHT (IMHT / NUM_WORKERS)
 
+#if (IMWD >= 32)
+    typedef uint32_t b_int;
+    #define INT_SIZE 32
+#elif (IMWD >= 16)
+    typedef uint16_t b_int;
+    #define INT_SIZE 16
+#endif
+
+#define WKWD (IMWD / INT_SIZE)
 
 #define ALIVE 255                 // def for alive cells
 #define DEAD 0                    // def for dead cells
@@ -37,6 +46,40 @@ on tile[0]: out port leds = XS1_PORT_4F;      // interface ports for LEDs
 #define FXOS8700EQ_OUT_Y_LSB 0x4
 #define FXOS8700EQ_OUT_Z_MSB 0x5
 #define FXOS8700EQ_OUT_Z_LSB 0x6
+
+// sets an individual cell in a packed b_int
+// takes the original b_int, the cell value and the position of the cell in this b_int
+// returns the new b_int value
+b_int setCell(b_int input, uchar cell, int pos) {
+    int bit = (cell == ALIVE);
+
+    return input | bit << pos;
+}
+
+// packs an entire b_int in one go from an array of cells
+b_int setCells(uchar cells[INT_SIZE]) {
+    b_int result = 0;
+
+    for (int i = 0; i < INT_SIZE; i++) {
+        uchar cell = cells[i];
+
+        result = setCell(result, cell, i);
+    }
+
+    return result;
+}
+
+// gets the value of a cell from a packed b_int at a given position in this b_int
+uchar getCell(b_int data, int pos) {
+    return ((data & (1 << pos)) != 0) * 255;
+}
+
+// puts an entire b_ints cells into the given array of cells
+void getCells(b_int data, uchar result[INT_SIZE]) {
+    for (int i = 0; i < INT_SIZE; i++) {
+        result[i] = getCell(data, i);
+    }
+}
 
 void showLEDs(out port p, int pattern) {
 
@@ -64,16 +107,16 @@ void buttonListener(in port b, chanend toDistributor) {
 }
 
 // function for reading in pgm image file
-void readImage(char infname[], uchar board[IMHT][IMWD]) {
+void readImage(char infname[], b_int board[IMHT][WKWD]) {
 
   int res;
   uchar line[ IMWD ];
 
-  printf("DataInStream: Start...\n");
+  printf("Reading file: %s...\n", infname);
 
   res = _openinpgm( infname, IMWD, IMHT ); // open PGM file
   if(res) {
-    printf("DataInStream: Error openening %s\n.", infname);
+    printf("Error openening file %s\n.", infname);
     return;
   }
 
@@ -81,10 +124,17 @@ void readImage(char infname[], uchar board[IMHT][IMWD]) {
   for(int y=0; y<IMHT; y++) {
 
     _readinline( line, IMWD );
-    for( int x = 0; x < IMWD; x++ ) {
-        board[y][x] = line[x];
+
+    for (int x = 0; x < WKWD; x++) {
+        b_int packed = 0;
+        for (int i = 0; i < INT_SIZE; i++) {
+            packed = setCell(packed, line[x * INT_SIZE + i], i);
+        }
+        board[y][x] = packed;
+
+
         #ifdef DEBUG_PRINTS
-          printf("-%4.1d ", line[ x ]); //show image values
+          printf("%u ", packed); //show image values
         #endif
     }
     #ifdef DEBUG_PRINTS
@@ -94,7 +144,50 @@ void readImage(char infname[], uchar board[IMHT][IMWD]) {
   }
 
   _closeinpgm(); // close PGM image file
-  printf("DataInStream: Done...\n");
+  printf("File read.\n");
+  return;
+
+}
+
+// function for writing image pgm image file
+void writeImage(char outfname[], b_int board[IMHT][WKWD]) {
+  int res;
+
+  printf("Writing to file %s...\n", outfname);
+
+  res = _openoutpgm(outfname, IMWD, IMHT); // open PGM file
+  if(res) {
+    printf("Error opening %s\n.", outfname);
+    return;
+  }
+
+  // compile each line of the image and write the image line-by-line
+  for(int y = 0; y < IMHT; y++) {
+      uchar line[ IMWD ];
+
+     for (int x = 0; x < WKWD; x++) {
+         b_int packed = board[y][x];
+
+#ifdef DEBUG_PRINTS
+         printf("%u ", packed);
+#endif
+
+         for (int i = 0; i < INT_SIZE; i++) {
+             line[(x * INT_SIZE) + i] = getCell(packed, i);
+         }
+     }
+
+#ifdef DEBUG_PRINTS
+     printf("\n");
+#endif
+
+    _writeoutline(line, IMWD);
+
+  }
+
+  _closeoutpgm(); // close PGM file
+  printf("Successfully written to file.");
+
   return;
 
 }
@@ -108,7 +201,7 @@ int modulo(int a, int b) {
 }
 
 // function for getting number of alive neighbours for a given cell
-int getLiveNeighbours(int x, int y, uchar board[WKHT + 2][IMWD]) {
+int getLiveNeighbours(int x, int y, b_int board[WKHT + 2][WKWD]) {
 
     int liveNeighbours = 0;
 
@@ -117,11 +210,13 @@ int getLiveNeighbours(int x, int y, uchar board[WKHT + 2][IMWD]) {
             if (!(i == x && j == y)) { // do not count the pixel itself
                 int neighbourX = modulo(i, IMWD);
                 int neighbourY = j;
-                if (board[neighbourY][neighbourX] == ALIVE) liveNeighbours++;
+
+                int packedLocation = neighbourX / INT_SIZE;
+
+                if (getCell(board[neighbourY][packedLocation], neighbourX % INT_SIZE) == ALIVE) liveNeighbours++;
             }
         }
     }
-
     return liveNeighbours;
 
 }
@@ -139,43 +234,8 @@ uchar nextPixel(int liveNeighbours, uchar currentPixel) {
 
 }
 
-// function for writing image pgm image file
-void writeImage(char outfname[], uchar board[IMHT][IMWD]) {
-
-  int res;
-  uchar line[ IMWD ];
-
-  printf("Writing to file %s...\n", outfname);
-
-  res = _openoutpgm(outfname, IMWD, IMHT); // open PGM file
-  if(res) {
-    printf("Error opening %s\n.", outfname);
-    return;
-  }
-
-  // compile each line of the image and write the image line-by-line
-  for(int y = 0; y < IMHT; y++) {
-
-    for(int x = 0; x < IMWD; x++) {
-      line[x] = board[y][x];
-    }
-
-    _writeoutline(line, IMWD);
-    #ifdef DEBUG_PRINTS
-        printf("Writing to file %s...\n", outfname);
-    #endif
-
-  }
-
-  _closeoutpgm(); // close PGM file
-  printf("DataOutStream: Done...\n");
-
-  return;
-
-}
-
 // function for calling functions needed to write new PGM file
-void exportBoard(uchar board[IMHT][IMWD], int round) {
+void exportBoard(b_int board[IMHT][WKWD], int round) {
 
     showLEDs(leds, 0b1000);                   // shows blue LED when writing
     char fileName[64];
@@ -186,33 +246,45 @@ void exportBoard(uchar board[IMHT][IMWD], int round) {
 
 void worker(chanend fromDistributor) {
     for (int round = 0; round < NUM_ROUNDS; round++) {
-        uchar board[WKHT + 2][IMWD];
+        b_int board[WKHT + 2][WKWD];
 
         for (int row = 0; row < WKHT + 2; row++) {
-            for (int col = 0; col < IMWD; col++) {
+            for (int col = 0; col < WKWD; col++) {
                 fromDistributor :> board[row][col];
             }
         }
 
         for (int row = 1; row < WKHT + 1; row++) {
-            for (int col = 0; col < IMWD; col++) {
-                int liveNeighbours = getLiveNeighbours(col, row, board);
-                uchar next = nextPixel(liveNeighbours, board[row][col]);
-                fromDistributor <: next;
+            for (int col = 0; col < WKWD; col++) {
+                uchar line[INT_SIZE];
+
+                for (int i = 0; i < INT_SIZE; i++) {
+                    int liveNeighbours = getLiveNeighbours((col * INT_SIZE) + i, row, board);
+
+                    uchar next = nextPixel(liveNeighbours, getCell(board[row][col], i));
+
+                    if (next != ALIVE && next != DEAD) {
+                        printf("malformed value: %d\n", next);
+                    }
+
+                    line[i] = next;
+                }
+
+                fromDistributor <: setCells(line);
             }
         }
 
     }
 }
 
-void splitBoard(chanend toWorkers[NUM_WORKERS], uchar board[IMHT][IMWD]) {
+void splitBoard(chanend toWorkers[NUM_WORKERS], b_int board[IMHT][WKWD]) {
     for (int i = 0; i < NUM_WORKERS; i++) {
-        int start_row = i * WKHT - 1;
+        int start_row = (i * WKHT) - 1;
         int end_row = (i + 1) * WKHT;
 
         for (int row = start_row; row <= end_row; row++) {
-            for (int col = 0; col < IMWD; col++) {
-                toWorkers[i] <: board[modulo(row, IMHT)][modulo(col, IMWD)];
+            for (int colBit = 0; colBit < WKWD; colBit++) {
+                toWorkers[i] <: board[modulo(row, IMHT)][colBit];
             }
         }
     }
@@ -249,7 +321,7 @@ void timing(chanend fromDistributor) {
 void distributor(chanend fromAcc, chanend fromButtons, chanend toWorkers[NUM_WORKERS],
         chanend fromTiming) {
 
-  uchar board[IMHT][IMWD];
+  b_int board[IMHT][WKWD];
 
   // start up and wait for button SW1 press
   printf( "ProcessImage: Start, size = %dx%d\n", IMHT, IMWD );
@@ -298,12 +370,11 @@ void distributor(chanend fromAcc, chanend fromButtons, chanend toWorkers[NUM_WOR
               splitBoard(toWorkers, board);
 
               for (int row = 0; row < WKHT; row++) {
-                  for (int col = 0; col < IMWD; col++) {
+                  for (int col = 0; col < WKWD; col++) {
                       for (int worker = 0; worker < NUM_WORKERS; worker++) {
-                          uchar cell;
-                          toWorkers[worker] :> cell;
-
-                          board[row + (WKHT * worker)][col] = cell;
+                          b_int z = 0;
+                          toWorkers[worker] :> z;
+                          board[row + (WKHT * worker)][col] = z;
                       }
                   }
               }
