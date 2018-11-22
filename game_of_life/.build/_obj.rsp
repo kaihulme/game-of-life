@@ -1,0 +1,1 @@
+..\.build\src\pgmIO.c.o ..\.build\_l_logging\src\debug_printf.c.o ..\.build\src\main.xc.o ..\.build\_l_i2c\src\i2c_master.xc.o ..\.build\_l_i2c\src\i2c_master_async.xc.o ..\.build\_l_i2c\src\i2c_master_ext.xc.o ..\.build\_l_i2c\src\i2c_master_single_port.xc.o ..\.build\_l_i2c\src\i2c_slave.xc.o ..\.build\_l_xassert\src\xassert.xc.o

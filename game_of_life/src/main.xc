@@ -11,9 +11,9 @@
 
 //////////// IMAGE SIZE, No. of WORKERS, No. of ROUNDS & DEBUGGING /////////////
 
-#define INPUT_IMAGE "512x512.pgm"   // image for processing
-#define IMHT 512                    // image height
-#define IMWD 512                    // image width
+#define INPUT_IMAGE "test.pgm"   // image for processing
+#define IMHT 16                    // image height
+#define IMWD 16                    // image width
 
 #define NUM_ROUNDS 100              // number of processing rounds
 #define NUM_WORKERS 4               // number of worker threads
@@ -109,9 +109,20 @@ void getCells(b_int data, uchar result[INT_SIZE]) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+/***************************** LED PATTERNS ***********************************/
+
+// sends LED pattern to board
+void showLEDs(out port p, int pattern) {
+
+    p <: pattern;   // bits represent LEDs: 1111 ~ green|blue|green|red
+
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 /************************ IMAGE READING AND WRITING ***************************/
 
-// function for reading in pgm image file
+// reads in pgm image file
 void readImage(char infname[], b_int board[IMHT][WKWD]) {
 
     int res;
@@ -153,7 +164,7 @@ void readImage(char infname[], b_int board[IMHT][WKWD]) {
     return;
 }
 
-// function for writing image pgm image file
+// writes image pgm image file
 void writeImage(char outfname[], b_int board[IMHT][WKWD]) {
     int res;
 
@@ -195,24 +206,13 @@ void writeImage(char outfname[], b_int board[IMHT][WKWD]) {
     return;
 }
 
-// function for calling functions needed to write new PGM file
+// sends LED pattern and creates file name for exported image
 void exportBoard(b_int board[IMHT][WKWD], int round) {
 
     showLEDs(leds, 0b1000);                   // shows blue LED when writing
     char fileName[64];
     sprintf(fileName, "%d_%s", round, INPUT_IMAGE);   // creates a file name for current round
     writeImage(fileName, board);              // writes image to PGM file
-
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-/***************************** LED PATTERNS ***********************************/
-
-// function for sending LED pattern to board
-void showLEDs(out port p, int pattern) {
-
-    p <: pattern;   // bits represent LEDs: 1111 ~ green|blue|green|red
 
 }
 
@@ -231,7 +231,7 @@ int startButtonPressed(chanend fromButtons) {
 }
 
 // deals with final function calls after processing rounds have completed
-void endGame(chanend fromTiming, round) {
+void endGame(chanend fromTiming, int round, b_int board[IMHT][WKWD]) {
   exportBoard(board, round);
   showLEDs(leds, 0b0000);
 
@@ -308,7 +308,7 @@ void splitBoard(chanend toWorkers[NUM_WORKERS], b_int board[IMHT][WKWD]) {
 }
 
 // distributes work between each worker
-void defaultRoundProcessing(chanend fromTiming, chanend toWorkers[NUM_WORKERS], int round) {
+void defaultRoundProcessing(chanend fromTiming, chanend toWorkers[NUM_WORKERS], int round, b_int board[IMHT][WKWD]) {
 
   fromTiming <: 1;
   showLEDs(leds, round % 2);
@@ -349,7 +349,7 @@ void tiltedDuringProcessing(chanend fromAcc, int round, int currentLED, int tilt
 }
 
 // deals with buttons being pressed furing round processing
-void buttonPressedDuringProcessing(int button, int round) {
+void buttonPressedDuringProcessing(int button, int round, b_int board[IMHT][WKWD]) {
     if (button == 13) exportBoard(board, round);
     return;
 }
@@ -362,8 +362,9 @@ void buttonPressedDuringProcessing(int button, int round) {
 void distributor(chanend fromAcc, chanend fromButtons, chanend toWorkers[NUM_WORKERS], chanend fromTiming) {
 
     // start up and wait for button SW1 press
-    printf("Waiting for read button press to begin...\n");
-    while (!startButtonPressed(fromButtons)) continue;
+    //printf("Waiting for read button press to begin...\n");
+    //while (!startButtonPressed(fromButtons)) continue;
+
     /*
     int button;
     fromButtons :> button;      // gets button press
@@ -400,14 +401,14 @@ void distributor(chanend fromAcc, chanend fromButtons, chanend toWorkers[NUM_WOR
               fromAcc :> tilted;
               */
 
-              tiltedDuringProcessing(fromAcc, currentLED, tilted);
+              tiltedDuringProcessing(fromAcc, round, currentLED, tilted);
               break;
 
           case fromButtons :> int button:
 
               // if (button == 13) exportBoard(board, round);
 
-              buttonPressedDuringProcessing(button, round);
+              buttonPressedDuringProcessing(button, round, board);
               break;
 
           default:
@@ -438,14 +439,15 @@ void distributor(chanend fromAcc, chanend fromButtons, chanend toWorkers[NUM_WOR
               printf("Turn %d complete in %f\n", round, roundTime);
               */
 
-              defaultRoundProcessing(fromTiming, toWorkers, round);
+              defaultRoundProcessing(fromTiming, toWorkers, round, board);
+              ++round;
               break;
 
       }
 
     }
 
-    endGame(fromTiming, round);
+    endGame(fromTiming, round, board);
 
     /*
     exportBoard(board, round);

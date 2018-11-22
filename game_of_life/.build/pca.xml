@@ -1,0 +1,1194 @@
+<preCompilationAnalysis>
+<fInfo name="high_pulse" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" specialize="false" noreturn="false" doNotSpecialize="false" numParams="3">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="high_pulse_sample" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" specialize="false" noreturn="false" doNotSpecialize="false" numParams="4">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+      <value type="null"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="release_clock_and_wait" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" specialize="false" noreturn="false" doNotSpecialize="false" numParams="3">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="start_bit" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" specialize="false" noreturn="false" doNotSpecialize="false" numParams="3">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="stop_bit" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" specialize="false" noreturn="false" doNotSpecialize="false" numParams="4">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="tx8" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" specialize="false" noreturn="false" doNotSpecialize="false" numParams="5">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="adjust_fall" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master_async.xc" specialize="false" noreturn="false" doNotSpecialize="true" numParams="3">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="adjust_for_slip" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master_async.xc" specialize="false" noreturn="false" doNotSpecialize="true" numParams="3">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+      <value type="null"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="high_pulse_drive" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master_single_port.xc" specialize="false" noreturn="false" doNotSpecialize="false" numParams="7">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="5" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="6" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="high_pulse_sample" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master_single_port.xc" specialize="true" noreturn="false" doNotSpecialize="false" numParams="7">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="true">
+    <values>
+      <value type="intval"><intval isSigned="true" val="0"/></value>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="5" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="6" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+ <specializations>
+   <specialization id="0">
+    <arg num="0"><values><value type="unknown"/></values></arg>
+    <arg num="1"><values><value type="intval"><intval isSigned="true" val="0"/></value></values></arg>
+    <arg num="2"><values><value type="unknown"/></values></arg>
+    <arg num="3"><values><value type="unknown"/></values></arg>
+    <arg num="4"><values><value type="unknown"/></values></arg>
+    <arg num="5"><values><value type="unknown"/></values></arg>
+    <arg num="6"><values><value type="unknown"/></values></arg>
+   </specialization>
+ </specializations>
+</fInfo>
+<fInfo name="start_bit" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master_single_port.xc" specialize="false" noreturn="false" doNotSpecialize="false" numParams="5">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="stop_bit" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master_single_port.xc" specialize="false" noreturn="false" doNotSpecialize="false" numParams="6">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="5" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="tx8" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master_single_port.xc" specialize="false" noreturn="false" doNotSpecialize="false" numParams="7">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="5" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="6" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="wait_half" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master_single_port.xc" specialize="false" noreturn="false" doNotSpecialize="true" numParams="1">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="wait_quarter" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master_single_port.xc" specialize="false" noreturn="false" doNotSpecialize="true" numParams="1">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="_safe_memcmp" global="true" specialize="false" noreturn="false" doNotSpecialize="true" numParams="3">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="_safe_memmove" global="true" specialize="false" noreturn="false" doNotSpecialize="true" numParams="3">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="_safe_memset" global="true" specialize="false" noreturn="false" doNotSpecialize="true" numParams="3">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="ack_read_request" global="true" interface="i2c_slave_callback_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="0">
+</fInfo>
+<fInfo name="ack_write_request" global="true" interface="i2c_slave_callback_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="0">
+</fInfo>
+<fInfo name="buttonListener" global="true" specialize="false" noreturn="true" doNotSpecialize="false" numParams="2">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="buttonPressedDuringProcessing" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="3">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="defaultRoundProcessing" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="4">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="delay_microseconds" global="true" specialize="false" noreturn="false" doNotSpecialize="true" numParams="1">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="delay_milliseconds" global="true" specialize="false" noreturn="false" doNotSpecialize="true" numParams="1">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="delay_seconds" global="true" specialize="false" noreturn="false" doNotSpecialize="true" numParams="1">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="distributor" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="4">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="endGame" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="3">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="exportBoard" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="2">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="getCell" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="2">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="getCells" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="2">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="getLiveNeighbours" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="3">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="get_read_data" global="true" interface="i2c_master_async_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="2">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="get_write_result" global="true" interface="i2c_master_async_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="1">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="i2c_master" global="true" specialize="true" noreturn="false" doNotSpecialize="false" numParams="5">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="interface"><interfaceInfo index="0" type="dist" func="i2c_master" global="true" impUnit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master_async.xc" impId="0" param="0"/></value>
+      <value type="interface"><interfaceInfo index="0" type="dist" func="_Si2c_master_0" global="true" impUnit="../src/main.xc" impId="1" param="0"/></value>
+    </values>
+  </arg>
+  <arg num="1" specialize="true">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4" specialize="true">
+    <values>
+      <value type="intval"><intval isSigned="true" val="10"/></value>
+    </values>
+  </arg>
+ <specializations>
+   <specialization id="0">
+    <arg num="0"><values><value type="unknown"/></values></arg>
+    <arg num="1"><values><value type="intval"><intval isSigned="true" val="1"/></value></values></arg>
+    <arg num="2"><values><value type="unknown"/></values></arg>
+    <arg num="3"><values><value type="unknown"/></values></arg>
+    <arg num="4"><values><value type="intval"><intval isSigned="true" val="10"/></value></values></arg>
+   </specialization>
+ </specializations>
+</fInfo>
+<fInfo name="i2c_master_async" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="6">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="4" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="5" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="i2c_master_async_aux" global="true" specialize="true" noreturn="false" doNotSpecialize="false" numParams="4">
+  <arg num="0" specialize="true">
+    <values>
+      <value type="interface"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="true">
+    <values>
+      <value type="interface"><interfaceInfo index="0" type="dist" func="i2c_master" global="true" impUnit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master_async.xc" impId="0" param="0"/></value>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+    </values>
+  </arg>
+ <specializations>
+   <specialization id="0">
+    <arg num="0"><values><value type="interface"/></values></arg>
+    <arg num="1"><values><value type="unknown"/></values></arg>
+    <arg num="2"><values><value type="interface"><interfaceInfo index="0" type="dist" func="i2c_master" global="true" impUnit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master_async.xc" impId="0" param="0"/></value></values></arg>
+    <arg num="3"><values><value type="unknown"/></values></arg>
+   </specialization>
+ </specializations>
+</fInfo>
+<fInfo name="i2c_master_async_comb" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="6">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="4" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="5" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="i2c_master_single_port" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="7">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="4" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="5" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="6" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="i2c_slave" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="4">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="main" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="0">
+</fInfo>
+<fInfo name="master_requires_data" global="true" interface="i2c_slave_callback_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="0">
+</fInfo>
+<fInfo name="master_sent_data" global="true" interface="i2c_slave_callback_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="1">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="modulo" global="true" specialize="true" noreturn="false" doNotSpecialize="false" numParams="2">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="true">
+    <values>
+      <value type="intval"><intval isSigned="true" val="16"/></value>
+    </values>
+  </arg>
+ <specializations>
+   <specialization id="0">
+    <arg num="0"><values><value type="unknown"/></values></arg>
+    <arg num="1"><values><value type="intval"><intval isSigned="true" val="16"/></value></values></arg>
+   </specialization>
+ </specializations>
+</fInfo>
+<fInfo name="nextPixel" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="2">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="operation_complete" global="true" interface="i2c_master_async_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="0">
+</fInfo>
+<fInfo name="orientation" global="true" specialize="true" noreturn="true" doNotSpecialize="false" numParams="2">
+  <arg num="0" specialize="true">
+    <values>
+      <value type="interface"><interfaceInfo index="0" type="dist" func="_Si2c_master_0" global="true" impUnit="../src/main.xc" impId="1" param="0"/></value>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+ <specializations>
+   <specialization id="0">
+    <arg num="0"><values><value type="interface"><interfaceInfo index="0" type="dist" func="_Si2c_master_0" global="true" impUnit="../src/main.xc" impId="1" param="0"/></value></values></arg>
+    <arg num="1"><values><value type="unknown"/></values></arg>
+   </specialization>
+ </specializations>
+</fInfo>
+<fInfo name="read" global="true" interface="i2c_master_async_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="3">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="read" global="true" interface="i2c_master_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="4">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+      <value type="intval"><intval isSigned="true" val="2"/></value>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+      <value type="unknown"/>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="readImage" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="2">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="read_acceleration" global="true" specialize="true" noreturn="false" doNotSpecialize="false" numParams="2">
+  <arg num="0" specialize="true">
+    <values>
+      <value type="interface"><interfaceInfo index="0" type="dist" func="_Si2c_master_0" global="true" impUnit="../src/main.xc" impId="1" param="0"/></value>
+    </values>
+  </arg>
+  <arg num="1" specialize="true">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+ <specializations>
+   <specialization id="0">
+    <arg num="0"><values><value type="interface"><interfaceInfo index="0" type="dist" func="_Si2c_master_0" global="true" impUnit="../src/main.xc" impId="1" param="0"/></value></values></arg>
+    <arg num="1"><values><value type="intval"><intval isSigned="true" val="1"/></value></values></arg>
+   </specialization>
+ </specializations>
+</fInfo>
+<fInfo name="read_reg" global="true" interface="i2c_master_if" specialize="false" noreturn="false" doNotSpecialize="true" numParams="4">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="read_reg16" global="true" interface="i2c_master_if" specialize="false" noreturn="false" doNotSpecialize="true" numParams="4">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="read_reg16_addr8" global="true" interface="i2c_master_if" specialize="false" noreturn="false" doNotSpecialize="true" numParams="4">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="read_reg8_addr16" global="true" interface="i2c_master_if" specialize="false" noreturn="false" doNotSpecialize="true" numParams="4">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="send_stop_bit" global="true" interface="i2c_master_async_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="0">
+</fInfo>
+<fInfo name="send_stop_bit" global="true" interface="i2c_master_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="0">
+</fInfo>
+<fInfo name="setCell" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="3">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="setCells" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="1">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="showLEDs" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="2">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+      <value type="intval"><intval isSigned="true" val="0"/></value>
+      <value type="intval"><intval isSigned="true" val="4"/></value>
+      <value type="intval"><intval isSigned="true" val="8"/></value>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="shutdown" global="true" interface="i2c_master_async_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="0">
+</fInfo>
+<fInfo name="shutdown" global="true" interface="i2c_master_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="0">
+</fInfo>
+<fInfo name="shutdown" global="true" interface="i2c_slave_callback_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="0">
+</fInfo>
+<fInfo name="splitBoard" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="2">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="startButtonPressed" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="1">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="start_master_read" global="true" interface="i2c_slave_callback_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="0">
+</fInfo>
+<fInfo name="start_master_write" global="true" interface="i2c_slave_callback_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="0">
+</fInfo>
+<fInfo name="start_read_request" global="true" interface="i2c_slave_callback_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="0">
+</fInfo>
+<fInfo name="start_write_request" global="true" interface="i2c_slave_callback_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="0">
+</fInfo>
+<fInfo name="stop_bit" global="true" interface="i2c_slave_callback_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="0">
+</fInfo>
+<fInfo name="tiltedDuringProcessing" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="4">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="timing" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="1">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="worker" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="1">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="write" global="true" interface="i2c_master_async_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="4">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="write" global="true" interface="i2c_master_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="5">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+      <value type="intval"><intval isSigned="true" val="2"/></value>
+      <value type="intval"><intval isSigned="true" val="3"/></value>
+      <value type="intval"><intval isSigned="true" val="4"/></value>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4" specialize="false">
+    <values>
+      <value type="unknown"/>
+      <value type="intval"><intval isSigned="true" val="0"/></value>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="writeImage" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="2">
+  <arg num="0" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="write_reg" global="true" interface="i2c_master_if" specialize="false" noreturn="false" doNotSpecialize="true" numParams="4">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="write_reg16" global="true" interface="i2c_master_if" specialize="false" noreturn="false" doNotSpecialize="true" numParams="4">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="write_reg16_addr8" global="true" interface="i2c_master_if" specialize="false" noreturn="false" doNotSpecialize="true" numParams="4">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="write_reg8_addr16" global="true" interface="i2c_master_if" specialize="false" noreturn="false" doNotSpecialize="true" numParams="4">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="1" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="2" specialize="false">
+    <values>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fInfo name="xassert_msg" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="1">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
+</fInfo>
+<fCall name="i2c_master" global="true" callerUnit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master_async.xc" numArgs="5" impId="0" specializationId="0">
+</fCall>
+<fCall name="i2c_master_async_aux" global="true" callerUnit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master_async.xc" numArgs="4" impId="1" specializationId="0">
+</fCall>
+<fCall name="i2c_master" global="true" callerUnit="../src/main.xc" numArgs="5" impId="1" specializationId="0">
+</fCall>
+<fCall name="orientation" global="true" callerUnit="../src/main.xc" numArgs="2" impId="2" specializationId="0">
+</fCall>
+</preCompilationAnalysis>
