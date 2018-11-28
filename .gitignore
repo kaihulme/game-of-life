@@ -1,5 +1,4 @@
 .build/
 .settings/
 bin/
-testout.pgm
 *.pgm

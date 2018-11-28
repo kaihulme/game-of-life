@@ -1,0 +1,162 @@
+<taskgraph>
+<task>
+  <name>delay_seconds</name>
+  <inFunction>delay_seconds</inFunction>
+  <calledFunction>delay_ticks_longlong</calledFunction>
+</task>
+<task>
+  <name>delay_milliseconds</name>
+  <inFunction>delay_milliseconds</inFunction>
+  <calledFunction>delay_ticks_longlong</calledFunction>
+</task>
+<task>
+  <name>delay_microseconds</name>
+  <inFunction>delay_microseconds</inFunction>
+  <calledFunction>delay_ticks_longlong</calledFunction>
+</task>
+<task>
+  <name>_safe_memcmp</name>
+  <inFunction>_safe_memcmp</inFunction>
+</task>
+<task>
+  <name>_safe_memmove</name>
+  <inFunction>_safe_memmove</inFunction>
+</task>
+<task>
+  <name>_safe_memset</name>
+  <inFunction>_safe_memset</inFunction>
+</task>
+<task>
+  <name>read_reg</name>
+  <inFunction>read_reg</inFunction>
+</task>
+<task>
+  <name>write_reg</name>
+  <inFunction>write_reg</inFunction>
+</task>
+<task>
+  <name>read_reg8_addr16</name>
+  <inFunction>read_reg8_addr16</inFunction>
+</task>
+<task>
+  <name>write_reg8_addr16</name>
+  <inFunction>write_reg8_addr16</inFunction>
+</task>
+<task>
+  <name>read_reg16</name>
+  <inFunction>read_reg16</inFunction>
+</task>
+<task>
+  <name>write_reg16</name>
+  <inFunction>write_reg16</inFunction>
+</task>
+<task>
+  <name>read_reg16_addr8</name>
+  <inFunction>read_reg16_addr8</inFunction>
+</task>
+<task>
+  <name>write_reg16_addr8</name>
+  <inFunction>write_reg16_addr8</inFunction>
+</task>
+<task>
+  <name>showLEDs</name>
+  <inFunction>showLEDs</inFunction>
+</task>
+<task>
+  <name>buttonListener</name>
+  <inFunction>buttonListener</inFunction>
+</task>
+<task>
+  <name>readImage</name>
+  <inFunction>readImage</inFunction>
+</task>
+<task>
+  <name>modulo</name>
+  <inFunction>modulo</inFunction>
+</task>
+<task>
+  <name>getLiveNeighbours</name>
+  <inFunction>getLiveNeighbours</inFunction>
+</task>
+<task>
+  <name>nextPixel</name>
+  <inFunction>nextPixel</inFunction>
+</task>
+<task>
+  <name>writeImage</name>
+  <inFunction>writeImage</inFunction>
+</task>
+<task>
+  <name>exportBoard</name>
+  <inFunction>exportBoard</inFunction>
+  <endOfSeqCalledFunction>writeImage</endOfSeqCalledFunction>
+</task>
+<task>
+  <name>distributor</name>
+  <inFunction>distributor</inFunction>
+  <endOfSeqCalledFunction>printf</endOfSeqCalledFunction>
+</task>
+<task>
+  <name>orientation</name>
+  <inFunction>orientation</inFunction>
+</task>
+<task>
+  <name>main</name>
+  <inFunction>main</inFunction>
+</task>
+<task>
+  <name>_task_i2c_master_0</name>
+  <inFunction>main</inFunction>
+  <parent>main</parent>
+  <calledFunction>i2c_master</calledFunction>
+  <distributed/>
+  <inPar/>
+</task>
+<task>
+  <name>_task_orientation_1</name>
+  <inFunction>main</inFunction>
+  <parent>main</parent>
+  <calledFunction>orientation</calledFunction>
+  <core>2</core>
+  <inPar/>
+</task>
+<task>
+  <name>_task_distributor_2</name>
+  <inFunction>main</inFunction>
+  <parent>main</parent>
+  <calledFunction>distributor</calledFunction>
+  <core>3</core>
+  <inPar/>
+</task>
+<task>
+  <name>_task_buttonListener_3</name>
+  <inFunction>main</inFunction>
+  <parent>main</parent>
+  <calledFunction>buttonListener</calledFunction>
+  <core>4</core>
+  <inPar/>
+</task>
+<connection>
+  <ends>
+    <end task="_task_i2c_master_0" type="server"/>
+    <end task="_task_orientation_1" type="client"/>
+  </ends>
+    <index>0</index>
+  <name>i2c</name>
+   <interface>i2c_master_if</interface>
+</connection>
+<connection>
+  <ends>
+    <end task="_task_orientation_1" type="chan"/>
+    <end task="_task_distributor_2" type="chan"/>
+  </ends>
+  <name>c_control</name>
+</connection>
+<connection>
+  <ends>
+    <end task="_task_distributor_2" type="chan"/>
+    <end task="_task_buttonListener_3" type="chan"/>
+  </ends>
+  <name>c_distribButtons</name>
+</connection>
+</taskgraph>

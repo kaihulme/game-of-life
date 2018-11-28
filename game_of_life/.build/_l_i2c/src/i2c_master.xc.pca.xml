@@ -1,0 +1,858 @@
+<preCompilationAnalysis file="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc">
+<fDef name="high_pulse" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" noreturn="false" doNotSpecialize="false" numParams="3"/>
+<fDef name="high_pulse_sample" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" noreturn="false" doNotSpecialize="false" numParams="4"/>
+<fDef name="release_clock_and_wait" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" noreturn="false" doNotSpecialize="false" numParams="3"/>
+<fDef name="start_bit" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" noreturn="false" doNotSpecialize="false" numParams="3"/>
+<fDef name="stop_bit" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" noreturn="false" doNotSpecialize="false" numParams="4"/>
+<fDef name="tx8" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" noreturn="false" doNotSpecialize="false" numParams="5"/>
+<fDef name="ack_read_request" global="true" interface="i2c_slave_callback_if" noreturn="false" doNotSpecialize="false" numParams="0"/>
+<fDef name="ack_write_request" global="true" interface="i2c_slave_callback_if" noreturn="false" doNotSpecialize="false" numParams="0"/>
+<fDef name="delay_microseconds" global="true" noreturn="false" doNotSpecialize="true" numParams="1"/>
+<fDef name="delay_milliseconds" global="true" noreturn="false" doNotSpecialize="true" numParams="1"/>
+<fDef name="delay_seconds" global="true" noreturn="false" doNotSpecialize="true" numParams="1"/>
+<fDef name="get_read_data" global="true" interface="i2c_master_async_if" noreturn="false" doNotSpecialize="false" numParams="2"/>
+<fDef name="get_write_result" global="true" interface="i2c_master_async_if" noreturn="false" doNotSpecialize="false" numParams="1"/>
+<fDef name="i2c_master" global="true" noreturn="false" doNotSpecialize="false" numParams="5"/>
+<fDef name="master_requires_data" global="true" interface="i2c_slave_callback_if" noreturn="false" doNotSpecialize="false" numParams="0"/>
+<fDef name="master_sent_data" global="true" interface="i2c_slave_callback_if" noreturn="false" doNotSpecialize="false" numParams="1"/>
+<fDef name="operation_complete" global="true" interface="i2c_master_async_if" noreturn="false" doNotSpecialize="false" numParams="0"/>
+<fDef name="read" global="true" interface="i2c_master_async_if" noreturn="false" doNotSpecialize="false" numParams="3"/>
+<fDef name="read" global="true" interface="i2c_master_if" noreturn="false" doNotSpecialize="false" numParams="4"/>
+<fDef name="read_acceleration" global="true" noreturn="false" doNotSpecialize="false" numParams="2"/>
+<fDef name="read_reg" global="true" interface="i2c_master_if" noreturn="false" doNotSpecialize="true" numParams="4"/>
+<fDef name="read_reg16" global="true" interface="i2c_master_if" noreturn="false" doNotSpecialize="true" numParams="4"/>
+<fDef name="read_reg16_addr8" global="true" interface="i2c_master_if" noreturn="false" doNotSpecialize="true" numParams="4"/>
+<fDef name="read_reg8_addr16" global="true" interface="i2c_master_if" noreturn="false" doNotSpecialize="true" numParams="4"/>
+<fDef name="send_stop_bit" global="true" interface="i2c_master_async_if" noreturn="false" doNotSpecialize="false" numParams="0"/>
+<fDef name="send_stop_bit" global="true" interface="i2c_master_if" noreturn="false" doNotSpecialize="false" numParams="0"/>
+<fDef name="shutdown" global="true" interface="i2c_master_async_if" noreturn="false" doNotSpecialize="false" numParams="0"/>
+<fDef name="shutdown" global="true" interface="i2c_master_if" noreturn="false" doNotSpecialize="false" numParams="0"/>
+<fDef name="shutdown" global="true" interface="i2c_slave_callback_if" noreturn="false" doNotSpecialize="false" numParams="0"/>
+<fDef name="start_master_read" global="true" interface="i2c_slave_callback_if" noreturn="false" doNotSpecialize="false" numParams="0"/>
+<fDef name="start_master_write" global="true" interface="i2c_slave_callback_if" noreturn="false" doNotSpecialize="false" numParams="0"/>
+<fDef name="start_read_request" global="true" interface="i2c_slave_callback_if" noreturn="false" doNotSpecialize="false" numParams="0"/>
+<fDef name="start_write_request" global="true" interface="i2c_slave_callback_if" noreturn="false" doNotSpecialize="false" numParams="0"/>
+<fDef name="stop_bit" global="true" interface="i2c_slave_callback_if" noreturn="false" doNotSpecialize="false" numParams="0"/>
+<fDef name="write" global="true" interface="i2c_master_async_if" noreturn="false" doNotSpecialize="false" numParams="4"/>
+<fDef name="write" global="true" interface="i2c_master_if" noreturn="false" doNotSpecialize="false" numParams="5"/>
+<fDef name="write_reg" global="true" interface="i2c_master_if" noreturn="false" doNotSpecialize="true" numParams="4"/>
+<fDef name="write_reg16" global="true" interface="i2c_master_if" noreturn="false" doNotSpecialize="true" numParams="4"/>
+<fDef name="write_reg16_addr8" global="true" interface="i2c_master_if" noreturn="false" doNotSpecialize="true" numParams="4"/>
+<fDef name="write_reg8_addr16" global="true" interface="i2c_master_if" noreturn="false" doNotSpecialize="true" numParams="4"/>
+<fCall name="write" global="true" interface="i2c_master_if" numArgs="5">
+  <arg num="0">
+    <passThroughArg param="1" caller="read_reg" global="true" interface="i2c_master_if"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4">
+    <values>
+      <value type="intval"><intval isSigned="true" val="0"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="send_stop_bit" global="true" interface="i2c_master_if" numArgs="0">
+</fCall>
+<fCall name="read" global="true" interface="i2c_master_if" numArgs="4">
+  <arg num="0">
+    <passThroughArg param="1" caller="read_reg" global="true" interface="i2c_master_if"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="write" global="true" interface="i2c_master_if" numArgs="5">
+  <arg num="0">
+    <passThroughArg param="1" caller="write_reg" global="true" interface="i2c_master_if"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="intval"><intval isSigned="true" val="2"/></value>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="write" global="true" interface="i2c_master_if" numArgs="5">
+  <arg num="0">
+    <passThroughArg param="1" caller="read_reg8_addr16" global="true" interface="i2c_master_if"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="intval"><intval isSigned="true" val="2"/></value>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4">
+    <values>
+      <value type="intval"><intval isSigned="true" val="0"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="send_stop_bit" global="true" interface="i2c_master_if" numArgs="0">
+</fCall>
+<fCall name="read" global="true" interface="i2c_master_if" numArgs="4">
+  <arg num="0">
+    <passThroughArg param="1" caller="read_reg8_addr16" global="true" interface="i2c_master_if"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="write" global="true" interface="i2c_master_if" numArgs="5">
+  <arg num="0">
+    <passThroughArg param="1" caller="write_reg8_addr16" global="true" interface="i2c_master_if"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="intval"><intval isSigned="true" val="3"/></value>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="write" global="true" interface="i2c_master_if" numArgs="5">
+  <arg num="0">
+    <passThroughArg param="1" caller="read_reg16" global="true" interface="i2c_master_if"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="intval"><intval isSigned="true" val="2"/></value>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4">
+    <values>
+      <value type="intval"><intval isSigned="true" val="0"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="send_stop_bit" global="true" interface="i2c_master_if" numArgs="0">
+</fCall>
+<fCall name="read" global="true" interface="i2c_master_if" numArgs="4">
+  <arg num="0">
+    <passThroughArg param="1" caller="read_reg16" global="true" interface="i2c_master_if"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="intval"><intval isSigned="true" val="2"/></value>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="write" global="true" interface="i2c_master_if" numArgs="5">
+  <arg num="0">
+    <passThroughArg param="1" caller="write_reg16" global="true" interface="i2c_master_if"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="intval"><intval isSigned="true" val="4"/></value>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="write" global="true" interface="i2c_master_if" numArgs="5">
+  <arg num="0">
+    <passThroughArg param="1" caller="read_reg16_addr8" global="true" interface="i2c_master_if"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4">
+    <values>
+      <value type="intval"><intval isSigned="true" val="0"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="send_stop_bit" global="true" interface="i2c_master_if" numArgs="0">
+</fCall>
+<fCall name="read" global="true" interface="i2c_master_if" numArgs="4">
+  <arg num="0">
+    <passThroughArg param="1" caller="read_reg16_addr8" global="true" interface="i2c_master_if"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="intval"><intval isSigned="true" val="2"/></value>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="write" global="true" interface="i2c_master_if" numArgs="5">
+  <arg num="0">
+    <passThroughArg param="1" caller="write_reg16_addr8" global="true" interface="i2c_master_if"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="intval"><intval isSigned="true" val="3"/></value>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="delay_ticks_longlong" global="true" numArgs="1">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="delay_ticks_longlong" global="true" numArgs="1">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="delay_ticks_longlong" global="true" numArgs="1">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="__builtin_pins_eq" global="true" numArgs="2">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="__builtin_timer_after" global="true" numArgs="2">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="read_reg" global="true" numArgs="4">
+  <arg num="0">
+    <passThroughArg param="0" caller="read_acceleration" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="intval"><intval isSigned="true" val="30"/></value>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="read_reg" global="true" numArgs="4">
+  <arg num="0">
+    <passThroughArg param="0" caller="read_acceleration" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="intval"><intval isSigned="true" val="30"/></value>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="__builtin_timer_after" global="true" numArgs="2">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="release_clock_and_wait" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" numArgs="3">
+  <arg num="0">
+    <passThroughArg param="0" caller="high_pulse_sample" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="__builtin_timer_after" global="true" numArgs="2">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1">
+    <passThroughArg param="3" caller="high_pulse_sample" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc"/>
+    <values>
+    </values>
+  </arg>
+</fCall>
+<fCall name="high_pulse_sample" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" numArgs="4">
+  <arg num="0">
+    <passThroughArg param="0" caller="high_pulse" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="null"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <passThroughArg param="1" caller="high_pulse" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="delay_ticks" global="true" numArgs="1">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="delay_ticks" global="true" numArgs="1">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="__builtin_timer_after" global="true" numArgs="2">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="__builtin_timer_after" global="true" numArgs="2">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="release_clock_and_wait" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" numArgs="3">
+  <arg num="0">
+    <passThroughArg param="0" caller="stop_bit" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <passThroughArg param="2" caller="stop_bit" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc"/>
+    <values>
+    </values>
+  </arg>
+</fCall>
+<fCall name="delay_ticks" global="true" numArgs="1">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="__builtin_bitrev" global="true" numArgs="1">
+  <arg num="0">
+    <passThroughArg param="2" caller="tx8" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc"/>
+    <values>
+    </values>
+  </arg>
+</fCall>
+<fCall name="high_pulse" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" numArgs="3">
+  <arg num="0">
+    <passThroughArg param="0" caller="tx8" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <passThroughArg param="3" caller="tx8" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="high_pulse_sample" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" numArgs="4">
+  <arg num="0">
+    <passThroughArg param="0" caller="tx8" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <passThroughArg param="3" caller="tx8" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="start_bit" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" numArgs="3">
+  <arg num="0">
+    <passThroughArg param="2" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <passThroughArg param="3" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="tx8" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" numArgs="5">
+  <arg num="0">
+    <passThroughArg param="2" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <passThroughArg param="3" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="high_pulse_sample" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" numArgs="4">
+  <arg num="0">
+    <passThroughArg param="2" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="__builtin_timer_after" global="true" numArgs="2">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="__builtin_timer_after" global="true" numArgs="2">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="release_clock_and_wait" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" numArgs="3">
+  <arg num="0">
+    <passThroughArg param="2" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="stop_bit" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" numArgs="4">
+  <arg num="0">
+    <passThroughArg param="2" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <passThroughArg param="3" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="start_bit" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" numArgs="3">
+  <arg num="0">
+    <passThroughArg param="2" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <passThroughArg param="3" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="tx8" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" numArgs="5">
+  <arg num="0">
+    <passThroughArg param="2" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <passThroughArg param="3" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="tx8" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" numArgs="5">
+  <arg num="0">
+    <passThroughArg param="2" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <passThroughArg param="3" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="4">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="stop_bit" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" numArgs="4">
+  <arg num="0">
+    <passThroughArg param="2" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <passThroughArg param="3" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="stop_bit" global="false" unit="C:/Users/jackb/Uni/GOL/game-of-life/lib_i2c/src/i2c_master.xc" numArgs="4">
+  <arg num="0">
+    <passThroughArg param="2" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="1">
+    <passThroughArg param="3" caller="i2c_master" global="true"/>
+    <values>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+</preCompilationAnalysis>
