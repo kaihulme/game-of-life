@@ -6,17 +6,20 @@
 #include <platform.h>
 #include <xs1.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "pgmIO.h"
 #include "i2c.h"
 
 //////////// IMAGE SIZE, No. of WORKERS, No. of ROUNDS & DEBUGGING /////////////
 
-#define INPUT_IMAGE "test.pgm"   // image for processing
-#define IMHT 16                    // image height
-#define IMWD 16                    // image width
+#define INPUT_IMAGE "128x128.pgm"   // image for processing
+#define IMHT 1344                   // image height
+#define IMWD 1344                   // image width
 
 #define NUM_ROUNDS 100              // number of processing rounds
-#define NUM_WORKERS 4               // number of worker threads
+#define NUM_WORKERS 8               // number of worker threads
+
+#define GENERATE_IMAGE            // generate the image on board (for large sizes)
 
 //#define DEBUG_PRINTS              // print statements for debugging
 
@@ -94,7 +97,7 @@ b_int setCells(uchar cells[INT_SIZE]) {
 // gets the value of a cell from a packed b_int at a given position in this b_int
 uchar getCell(b_int data, int pos) {
 
-    return ((data & (1 << pos)) != 0) * 255;
+    return ((data & (1 << pos)) != 0) ? 255 : 0;
 
 }
 
@@ -139,7 +142,7 @@ void readImage(char infname[], b_int board[IMHT][WKWD]) {
     // read image line-by-line and send byte by byte to channel c_out
     for(int y=0; y<IMHT; y++) {
 
-    _readinline( line, IMWD );
+        _readinline( line, IMWD );
 
         for (int x = 0; x < WKWD; x++) {
             b_int packed = 0;
@@ -232,15 +235,16 @@ int startButtonPressed(chanend fromButtons) {
 
 // deals with final function calls after processing rounds have completed
 void endGame(chanend fromTiming, int round, b_int board[IMHT][WKWD]) {
-  exportBoard(board, round);
-  showLEDs(leds, 0b0000);
+    fromTiming <: 0;
+    float totalTime;
+    fromTiming :> totalTime;
+    printf( "\nDone (total time: %f, average: %f).\n", totalTime, totalTime / NUM_ROUNDS);
 
-  fromTiming <: 0;
-  float totalTime;
-  fromTiming :> totalTime;
-  printf( "\nDone (total time: %f, average: %f).\n", totalTime, totalTime / NUM_ROUNDS);
 
-  return;
+    exportBoard(board, round);
+    showLEDs(leds, 0b0000);
+
+    return;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -254,9 +258,10 @@ int modulo(int a, int b) {
 }
 
 // gets the number of alive neighbours for a given cell
-int getLiveNeighbours(int x, int y, b_int board[WKHT + 2][WKWD]) {
+uchar getNextValue(int x, int y, uchar currentValue, b_int board[WKHT + 2][WKWD]) {
 
     int liveNeighbours = 0;
+    int neighboursChecked = 0;
 
     // go from one before the cell to one after
     for (int i = x - 1; i <= x + 1; i++) {
@@ -267,16 +272,38 @@ int getLiveNeighbours(int x, int y, b_int board[WKHT + 2][WKWD]) {
 
                 int packedLocation = neighbourX / INT_SIZE;
 
-                if (getCell(board[neighbourY][packedLocation], neighbourX % INT_SIZE) == ALIVE)
+                neighboursChecked++;
+                if (getCell(board[neighbourY][packedLocation], neighbourX % INT_SIZE) == ALIVE) {
                     liveNeighbours++;
+                }
+
+                if (currentValue == ALIVE) {
+                    if (liveNeighbours > 3) return DEAD;
+                    else if (neighboursChecked == 7) {
+                        if (liveNeighbours == 0) return DEAD;
+                        if (liveNeighbours == 2) return ALIVE;
+                    }
+                    else if (neighboursChecked == 8) {
+                        if (liveNeighbours > 1 && liveNeighbours < 4) return ALIVE;
+                        return DEAD;
+                    }
+                }
+                else {
+                    if (neighboursChecked - liveNeighbours == 6) return DEAD;
+                    else if (neighboursChecked == 8) {
+                        if (liveNeighbours == 3) return ALIVE;
+                        return DEAD;
+                    }
+                }
             }
         }
     }
-    return liveNeighbours;
 
+    printf("This should not have happened...\n");
+    return DEAD;
 }
 
-// works out next state for given pixel according to game of life rules
+/*// works out next state for given pixel according to game of life rules
 uchar nextPixel(int liveNeighbours, uchar currentPixel) {
 
     if (currentPixel == ALIVE) {
@@ -287,7 +314,7 @@ uchar nextPixel(int liveNeighbours, uchar currentPixel) {
 
     return currentPixel;
 
-}
+}*/
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -354,6 +381,22 @@ void buttonPressedDuringProcessing(int button, int round, b_int board[IMHT][WKWD
     return;
 }
 
+// generates a randomised starting image
+void randomImage(b_int board[IMHT][WKWD]) {
+    timer t;
+
+    uint32_t tm;
+    t :> tm;
+
+    srand(tm);    // Initialization, should only be called once.
+
+    for (int row = 0; row < IMHT; row++) {
+        for (int col = 0; col < WKWD; col++) {
+            board[row][col] = rand();
+        }
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 /**************************** PARALLEL FUNCTIONS ******************************/
@@ -362,20 +405,16 @@ void buttonPressedDuringProcessing(int button, int round, b_int board[IMHT][WKWD
 void distributor(chanend fromAcc, chanend fromButtons, chanend toWorkers[NUM_WORKERS], chanend fromTiming) {
 
     // start up and wait for button SW1 press
-    //printf("Waiting for read button press to begin...\n");
-    //while (!startButtonPressed(fromButtons)) continue;
-
-    /*
-    int button;
-    fromButtons :> button;      // gets button press
-    while (button != 14) {      // if button press is not SW1 ...
-      fromButtons :> button;  // ... wait for button SW1 press
-    }
-    */
+    printf("Waiting for read button press to begin...\n");
+    while (!startButtonPressed(fromButtons)) continue;
 
     // set board size and read PGM image to board array
     b_int board[IMHT][WKWD];
+#ifdef GENERATE_IMAGE
+    randomImage(board);
+#else
     readImage(INPUT_IMAGE, board);
+#endif
     printf( "ProcessImage: Start, size = %dx%d\n", IMHT, IMWD );
 
     // begin processing
@@ -413,32 +452,6 @@ void distributor(chanend fromAcc, chanend fromButtons, chanend toWorkers[NUM_WOR
 
           default:
 
-              /*
-              fromTiming <: 1;
-              showLEDs(leds, round % 2);
-
-              splitBoard(toWorkers, board);
-
-              for (int row = 0; row < WKHT; row++) {
-                  for (int col = 0; col < WKWD; col++) {
-                      for (int worker = 0; worker < NUM_WORKERS; worker++) {
-                          b_int z = 0;
-                          toWorkers[worker] :> z;
-                          board[row + (WKHT * worker)][col] = z;
-                      }
-                  }
-              }
-
-              ++round;
-
-              fromTiming <: 1;
-
-              float roundTime;
-              fromTiming :> roundTime;
-
-              printf("Turn %d complete in %f\n", round, roundTime);
-              */
-
               defaultRoundProcessing(fromTiming, toWorkers, round, board);
               ++round;
               break;
@@ -448,16 +461,6 @@ void distributor(chanend fromAcc, chanend fromButtons, chanend toWorkers[NUM_WOR
     }
 
     endGame(fromTiming, round, board);
-
-    /*
-    exportBoard(board, round);
-    showLEDs(leds, 0b0000);
-
-    fromTiming <: 0;
-    float totalTime;
-    fromTiming :> totalTime;
-    printf( "\nDone (total time: %f, average: %f).\n", totalTime, totalTime / NUM_ROUNDS);
-    */
 
 }
 
@@ -472,18 +475,12 @@ void worker(chanend fromDistributor) {
             }
         }
 
+        uchar line[INT_SIZE];
         for (int row = 1; row < WKHT + 1; row++) {
             for (int col = 0; col < WKWD; col++) {
-                uchar line[INT_SIZE];
 
                 for (int i = 0; i < INT_SIZE; i++) {
-                    int liveNeighbours = getLiveNeighbours((col * INT_SIZE) + i, row, board);
-
-                    uchar next = nextPixel(liveNeighbours, getCell(board[row][col], i));
-
-                    if (next != ALIVE && next != DEAD) {
-                        printf("malformed value: %d\n", next);
-                    }
+                    uchar next = getNextValue((col * INT_SIZE) + i, row, getCell(board[row][col], i), board);
 
                     line[i] = next;
                 }
@@ -588,10 +585,10 @@ int main(void) {
         on tile[0]: orientation(i2c[0],c_control);                //client thread reading orientation data
         on tile[0]: buttonListener(buttons, c_distribButtons);
 
-        on tile[1]: timing(c_timing);
+        on tile[0]: timing(c_timing);
         on tile[0]: distributor(c_control, c_distribButtons, c_distribWorkers, c_timing);     //thread to coordinate work on image
         par (int w = 0; w < NUM_WORKERS; w++) {
-            on tile[w % 2]: worker(c_distribWorkers[w]);
+            on tile[1]: worker(c_distribWorkers[w]);
         }
     }
 
