@@ -508,7 +508,12 @@ void worker(chanend fromDistributor) {
 
                     for (int r = row - 1; r <= row + 1; r++) {
                         if (getCell(board[r][leftCol], INT_SIZE - 1) == ALIVE) leftAlive++;
+                        else break;
+                    }
+
+                    for (int r = row - 1; r <= row + 1; r++) {
                         if (getCell(board[r][rightCol], 0) == ALIVE) rightAlive++;
+                        else break;
                     }
 
                     if (leftAlive == 3) packed = setCell(packed, ALIVE, 0);
