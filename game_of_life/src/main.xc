@@ -13,13 +13,13 @@
 //////////// IMAGE SIZE, No. of WORKERS, No. of ROUNDS & DEBUGGING /////////////
 
 #define INPUT_IMAGE "128x128.pgm"   // image for processing
-#define IMHT 1344                   // image height
-#define IMWD 1344                   // image width
+#define IMHT 128                  // image height
+#define IMWD 128                   // image width
 
 #define NUM_ROUNDS 100              // number of processing rounds
 #define NUM_WORKERS 8               // number of worker threads
 
-#define GENERATE_IMAGE            // generate the image on board (for large sizes)
+//#define GENERATE_IMAGE            // generate the image on board (for large sizes)
 
 //#define DEBUG_PRINTS              // print statements for debugging
 
@@ -28,8 +28,11 @@
 #define WKHT (IMHT / NUM_WORKERS)   // height of worker boards
 
 #if (IMWD >= 32)                    // define int size for bit packing...
-    typedef uint32_t b_int;         // ... depending on input image size
-    #define INT_SIZE 32
+//    typedef uint32_t b_int;         // ... depending on input image size
+//    #define INT_SIZE 32
+
+    typedef uint16_t b_int;
+    #define INT_SIZE 16
 #elif (IMWD >= 16)
     typedef uint16_t b_int;
     #define INT_SIZE 16
@@ -77,7 +80,6 @@ b_int setCell(b_int input, uchar cell, int pos) {
 
     int bit = (cell == ALIVE);
     return input | bit << pos;
-
 }
 
 // packs an entire b_int in one go from an array of cells
@@ -204,7 +206,7 @@ void writeImage(char outfname[], b_int board[IMHT][WKWD]) {
     }
 
     _closeoutpgm(); // close PGM file
-    printf("Successfully written to file.");
+    printf("Successfully written to file.\n");
 
     return;
 }
@@ -476,16 +478,58 @@ void worker(chanend fromDistributor) {
         }
 
         uchar line[INT_SIZE];
+
+        int skipsRemaining[WKWD];
+        for (int i = 0; i < WKWD; i++) {
+            skipsRemaining[i] = 0;
+        }
+
         for (int row = 1; row < WKHT + 1; row++) {
             for (int col = 0; col < WKWD; col++) {
 
-                for (int i = 0; i < INT_SIZE; i++) {
-                    uchar next = getNextValue((col * INT_SIZE) + i, row, getCell(board[row][col], i), board);
+                if (board[row][col] == 0 && board[row - 1][col] == 0) {
+                    int rowsBelow = 1;
+                    while (row + rowsBelow < WKHT + 2 &&
+                            board[row + rowsBelow][col] == 0) rowsBelow++;
 
-                    line[i] = next;
+                    if (rowsBelow > 1) {
+                        skipsRemaining[col] = rowsBelow - 1;
+                    }
                 }
 
-                fromDistributor <: setCells(line);
+                if (skipsRemaining[col] > 0) {
+                    b_int packed = 0;
+
+                    int leftCol = modulo(col - 1, WKWD);
+                    int rightCol = modulo(col + 1, WKWD);
+
+                    int leftAlive = 0;
+                    int rightAlive = 0;
+
+                    for (int r = row - 1; r <= row + 1; r++) {
+                        if (getCell(board[r][leftCol], INT_SIZE - 1) == ALIVE) leftAlive++;
+                        if (getCell(board[r][rightCol], 0) == ALIVE) rightAlive++;
+                    }
+
+                    if (leftAlive == 3) packed = setCell(packed, ALIVE, 0);
+                    if (rightAlive == 3) packed = setCell(packed, ALIVE, INT_SIZE - 1);
+
+//                    packed = setCell(packed, getNextValue(col * INT_SIZE, row, getCell(board[row][col], 0), board), 0);
+//                    packed = setCell(packed, getNextValue(col * INT_SIZE + INT_SIZE - 1, row, getCell(board[row][col], INT_SIZE - 1), board), INT_SIZE - 1);
+
+                    fromDistributor <: packed;
+
+                    skipsRemaining[col]--;
+                }
+                else {
+                    for (int i = 0; i < INT_SIZE; i++) {
+                        uchar next = getNextValue((col * INT_SIZE) + i, row, getCell(board[row][col], i), board);
+
+                        line[i] = next;
+                    }
+
+                    fromDistributor <: setCells(line);
+                }
             }
         }
 
