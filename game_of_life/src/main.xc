@@ -10,14 +10,18 @@
 #include "pgmIO.h"
 #include "i2c.h"
 
+#define STR_IMPL_(x) #x      //stringify argument
+#define STR(x) STR_IMPL_(x)  //indirection to expand argument macros
+
 //////////// IMAGE SIZE, No. of WORKERS, No. of ROUNDS & DEBUGGING /////////////
 
-#define INPUT_IMAGE "128x128.pgm"   // image for processing
-#define IMHT 128                  // image height
-#define IMWD 128                   // image width
+#define SIZE 1024
+
+#define IMHT SIZE                  // image height
+#define IMWD SIZE                   // image width
 
 #define NUM_ROUNDS 100              // number of processing rounds
-#define NUM_WORKERS 8               // number of worker threads
+#define NUM_WORKERS 4               // number of worker threads
 
 //#define GENERATE_IMAGE            // generate the image on board (for large sizes)
 
@@ -25,20 +29,27 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
+#define INPUT_IMAGE STR(IMHT) "x" STR(IMWD) ".pgm"   // image for processing
+
 #define WKHT (IMHT / NUM_WORKERS)   // height of worker boards
 
 #if (IMWD >= 32)                    // define int size for bit packing...
-//    typedef uint32_t b_int;         // ... depending on input image size
-//    #define INT_SIZE 32
-
-    typedef uint16_t b_int;
-    #define INT_SIZE 16
+    typedef uint32_t b_int;         // ... depending on input image size
+    #define INT_SIZE 32
 #elif (IMWD >= 16)
     typedef uint16_t b_int;
     #define INT_SIZE 16
 #endif
 
 #define WKWD (IMWD / INT_SIZE)      // width of worker boards
+
+#if NUM_WORKERS <= 4
+    #define WK_CHAN_TYPE streaming chan
+    #define WK_CHANEND_TYPE streaming chanend
+#else
+    #define WK_CHAN_TYPE chan
+    #define WK_CHANEND_TYPE chanend
+#endif
 
 #define ALIVE 255                   // def for alive cells
 #define DEAD 0                      // def for dead cells
@@ -305,25 +316,12 @@ uchar getNextValue(int x, int y, uchar currentValue, b_int board[WKHT + 2][WKWD]
     return DEAD;
 }
 
-/*// works out next state for given pixel according to game of life rules
-uchar nextPixel(int liveNeighbours, uchar currentPixel) {
-
-    if (currentPixel == ALIVE) {
-        if (liveNeighbours < 2) return DEAD;
-        else if (liveNeighbours > 3) return DEAD;
-    }
-    else if (currentPixel == DEAD && liveNeighbours == 3) return ALIVE;
-
-    return currentPixel;
-
-}*/
-
 ////////////////////////////////////////////////////////////////////////////////
 
 /***************************** ROUND PROCESSES ********************************/
 
 // splits up the board for workers
-void splitBoard(chanend toWorkers[NUM_WORKERS], b_int board[IMHT][WKWD]) {
+void splitBoard(WK_CHANEND_TYPE toWorkers[NUM_WORKERS], b_int board[IMHT][WKWD]) {
     for (int i = 0; i < NUM_WORKERS; i++) {
         int start_row = (i * WKHT) - 1;
         int end_row = (i + 1) * WKHT;
@@ -337,7 +335,7 @@ void splitBoard(chanend toWorkers[NUM_WORKERS], b_int board[IMHT][WKWD]) {
 }
 
 // distributes work between each worker
-void defaultRoundProcessing(chanend fromTiming, chanend toWorkers[NUM_WORKERS], int round, b_int board[IMHT][WKWD]) {
+void defaultRoundProcessing(chanend fromTiming, WK_CHANEND_TYPE toWorkers[NUM_WORKERS], int round, b_int board[IMHT][WKWD]) {
 
   fromTiming <: 1;
   showLEDs(leds, round % 2);
@@ -404,7 +402,7 @@ void randomImage(b_int board[IMHT][WKWD]) {
 /**************************** PARALLEL FUNCTIONS ******************************/
 
 // sets up round processing
-void distributor(chanend fromAcc, chanend fromButtons, chanend toWorkers[NUM_WORKERS], chanend fromTiming) {
+void distributor(chanend fromAcc, chanend fromButtons, WK_CHANEND_TYPE toWorkers[NUM_WORKERS], chanend fromTiming) {
 
     // start up and wait for button SW1 press
     printf("Waiting for read button press to begin...\n");
@@ -467,7 +465,7 @@ void distributor(chanend fromAcc, chanend fromButtons, chanend toWorkers[NUM_WOR
 }
 
 // completes game of life tules on a given section of the board
-void worker(chanend fromDistributor) {
+void worker(WK_CHANEND_TYPE fromDistributor) {
     for (int round = 0; round < NUM_ROUNDS; round++) {
         b_int board[WKHT + 2][WKWD];
 
@@ -518,9 +516,6 @@ void worker(chanend fromDistributor) {
 
                     if (leftAlive == 3) packed = setCell(packed, ALIVE, 0);
                     if (rightAlive == 3) packed = setCell(packed, ALIVE, INT_SIZE - 1);
-
-//                    packed = setCell(packed, getNextValue(col * INT_SIZE, row, getCell(board[row][col], 0), board), 0);
-//                    packed = setCell(packed, getNextValue(col * INT_SIZE + INT_SIZE - 1, row, getCell(board[row][col], INT_SIZE - 1), board), INT_SIZE - 1);
 
                     fromDistributor <: packed;
 
@@ -627,7 +622,9 @@ void timing(chanend fromDistributor) {
 // main function for concurrent orchestration of functions
 int main(void) {
     i2c_master_if i2c[1];               // interface to orientation
-    chan c_control, c_distribButtons, c_distribWorkers[NUM_WORKERS], c_timing;   // channel definitions
+    chan c_control, c_distribButtons, c_timing;   // channel definitions
+
+    WK_CHAN_TYPE c_distribWorkers[NUM_WORKERS];
 
     par {
         on tile[0]: i2c_master(i2c, 1, p_scl, p_sda, 10);         //server thread providing orientation data
