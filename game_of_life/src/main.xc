@@ -15,13 +15,13 @@
 
 //////////// IMAGE SIZE, No. of WORKERS, No. of ROUNDS & DEBUGGING /////////////
 
-#define SIZE 1024
+#define SIZE 16
 
 #define IMHT SIZE                  // image height
 #define IMWD SIZE                   // image width
 
-#define NUM_ROUNDS 100              // number of processing rounds
-#define NUM_WORKERS 4               // number of worker threads
+#define NUM_ROUNDS 2              // number of processing rounds
+#define NUM_WORKERS 8               // number of worker threads
 
 //#define GENERATE_IMAGE            // generate the image on board (for large sizes)
 

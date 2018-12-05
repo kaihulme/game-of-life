@@ -516,6 +516,8 @@
   <arg num="1" specialize="false">
     <values>
       <value type="unknown"/>
+      <value type="intval"><intval isSigned="true" val="0"/></value>
+      <value type="intval"><intval isSigned="true" val="15"/></value>
     </values>
   </arg>
 </fInfo>
@@ -529,7 +531,7 @@
     </values>
   </arg>
 </fInfo>
-<fInfo name="getLiveNeighbours" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="3">
+<fInfo name="getNextValue" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="4">
   <arg num="0" specialize="false">
     <values>
       <value type="unknown"/>
@@ -541,6 +543,11 @@
     </values>
   </arg>
   <arg num="2" specialize="false">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="3" specialize="false">
     <values>
       <value type="unknown"/>
     </values>
@@ -738,25 +745,7 @@
     </values>
   </arg>
 </fInfo>
-<fInfo name="modulo" global="true" specialize="true" noreturn="false" doNotSpecialize="false" numParams="2">
-  <arg num="0" specialize="false">
-    <values>
-      <value type="unknown"/>
-    </values>
-  </arg>
-  <arg num="1" specialize="true">
-    <values>
-      <value type="intval"><intval isSigned="true" val="16"/></value>
-    </values>
-  </arg>
- <specializations>
-   <specialization id="0">
-    <arg num="0"><values><value type="unknown"/></values></arg>
-    <arg num="1"><values><value type="intval"><intval isSigned="true" val="16"/></value></values></arg>
-   </specialization>
- </specializations>
-</fInfo>
-<fInfo name="nextPixel" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="2">
+<fInfo name="modulo" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="2">
   <arg num="0" specialize="false">
     <values>
       <value type="unknown"/>
@@ -764,7 +753,8 @@
   </arg>
   <arg num="1" specialize="false">
     <values>
-      <value type="unknown"/>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+      <value type="intval"><intval isSigned="true" val="16"/></value>
     </values>
   </arg>
 </fInfo>
@@ -787,6 +777,12 @@
     <arg num="1"><values><value type="unknown"/></values></arg>
    </specialization>
  </specializations>
+</fInfo>
+<fInfo name="randomImage" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="1">
+  <arg num="0" specialize="false">
+    <values>
+    </values>
+  </arg>
 </fInfo>
 <fInfo name="read" global="true" interface="i2c_master_async_if" specialize="false" noreturn="false" doNotSpecialize="false" numParams="3">
   <arg num="0" specialize="false">
@@ -942,11 +938,14 @@
   <arg num="1" specialize="false">
     <values>
       <value type="unknown"/>
+      <value type="intval"><intval isSigned="true" val="255"/></value>
     </values>
   </arg>
   <arg num="2" specialize="false">
     <values>
       <value type="unknown"/>
+      <value type="intval"><intval isSigned="true" val="0"/></value>
+      <value type="intval"><intval isSigned="true" val="15"/></value>
     </values>
   </arg>
 </fInfo>
@@ -993,6 +992,7 @@
 <fInfo name="startButtonPressed" global="true" specialize="false" noreturn="false" doNotSpecialize="false" numParams="1">
   <arg num="0" specialize="false">
     <values>
+      <value type="unknown"/>
     </values>
   </arg>
 </fInfo>

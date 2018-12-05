@@ -15,16 +15,16 @@
 <fDef name="exportBoard" global="true" noreturn="false" doNotSpecialize="false" numParams="2"/>
 <fDef name="getCell" global="true" noreturn="false" doNotSpecialize="false" numParams="2"/>
 <fDef name="getCells" global="true" noreturn="false" doNotSpecialize="false" numParams="2"/>
-<fDef name="getLiveNeighbours" global="true" noreturn="false" doNotSpecialize="false" numParams="3"/>
+<fDef name="getNextValue" global="true" noreturn="false" doNotSpecialize="false" numParams="4"/>
 <fDef name="get_read_data" global="true" interface="i2c_master_async_if" noreturn="false" doNotSpecialize="false" numParams="2"/>
 <fDef name="get_write_result" global="true" interface="i2c_master_async_if" noreturn="false" doNotSpecialize="false" numParams="1"/>
 <fDef name="main" global="true" noreturn="false" doNotSpecialize="false" numParams="0"/>
 <fDef name="master_requires_data" global="true" interface="i2c_slave_callback_if" noreturn="false" doNotSpecialize="false" numParams="0"/>
 <fDef name="master_sent_data" global="true" interface="i2c_slave_callback_if" noreturn="false" doNotSpecialize="false" numParams="1"/>
 <fDef name="modulo" global="true" noreturn="false" doNotSpecialize="false" numParams="2"/>
-<fDef name="nextPixel" global="true" noreturn="false" doNotSpecialize="false" numParams="2"/>
 <fDef name="operation_complete" global="true" interface="i2c_master_async_if" noreturn="false" doNotSpecialize="false" numParams="0"/>
 <fDef name="orientation" global="true" noreturn="true" doNotSpecialize="false" numParams="2"/>
+<fDef name="randomImage" global="true" noreturn="false" doNotSpecialize="false" numParams="1"/>
 <fDef name="read" global="true" interface="i2c_master_async_if" noreturn="false" doNotSpecialize="false" numParams="3"/>
 <fDef name="read" global="true" interface="i2c_master_if" noreturn="false" doNotSpecialize="false" numParams="4"/>
 <fDef name="readImage" global="true" noreturn="false" doNotSpecialize="false" numParams="2"/>
@@ -687,6 +687,23 @@
     </values>
   </arg>
 </fCall>
+<fCall name="printf" global="true" numArgs="3">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
 <fCall name="exportBoard" global="true" numArgs="2">
   <arg num="0">
     <values>
@@ -711,23 +728,6 @@
     </values>
   </arg>
 </fCall>
-<fCall name="printf" global="true" numArgs="3">
-  <arg num="0">
-    <values>
-      <value type="unknown"/>
-    </values>
-  </arg>
-  <arg num="1">
-    <values>
-      <value type="unknown"/>
-    </values>
-  </arg>
-  <arg num="2">
-    <values>
-      <value type="unknown"/>
-    </values>
-  </arg>
-</fCall>
 <fCall name="modulo" global="true" numArgs="2">
   <arg num="0">
     <values>
@@ -747,6 +747,13 @@
     </values>
   </arg>
   <arg num="1">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="printf" global="true" numArgs="1">
+  <arg num="0">
     <values>
       <value type="unknown"/>
     </values>
@@ -825,6 +832,29 @@
   </arg>
   <arg num="1">
     <passThroughArg param="1" caller="buttonPressedDuringProcessing" global="true"/>
+    <values>
+    </values>
+  </arg>
+</fCall>
+<fCall name="srand" global="true" numArgs="1">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="rand" global="true" numArgs="0">
+</fCall>
+<fCall name="printf" global="true" numArgs="1">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="startButtonPressed" global="true" numArgs="1">
+  <arg num="0">
+    <passThroughArg param="1" caller="distributor" global="true"/>
     <values>
     </values>
   </arg>
@@ -955,7 +985,89 @@
     </values>
   </arg>
 </fCall>
-<fCall name="getLiveNeighbours" global="true" numArgs="3">
+<fCall name="modulo" global="true" numArgs="2">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="modulo" global="true" numArgs="2">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="intval"><intval isSigned="true" val="1"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="getCell" global="true" numArgs="2">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="intval"><intval isSigned="true" val="15"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="getCell" global="true" numArgs="2">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="intval"><intval isSigned="true" val="0"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="setCell" global="true" numArgs="3">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="intval"><intval isSigned="true" val="255"/></value>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="intval"><intval isSigned="true" val="0"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="setCell" global="true" numArgs="3">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+  <arg num="1">
+    <values>
+      <value type="intval"><intval isSigned="true" val="255"/></value>
+    </values>
+  </arg>
+  <arg num="2">
+    <values>
+      <value type="intval"><intval isSigned="true" val="15"/></value>
+    </values>
+  </arg>
+</fCall>
+<fCall name="getNextValue" global="true" numArgs="4">
   <arg num="0">
     <values>
       <value type="unknown"/>
@@ -971,32 +1083,13 @@
       <value type="unknown"/>
     </values>
   </arg>
-</fCall>
-<fCall name="nextPixel" global="true" numArgs="2">
-  <arg num="0">
-    <values>
-      <value type="unknown"/>
-    </values>
-  </arg>
-  <arg num="1">
+  <arg num="3">
     <values>
       <value type="unknown"/>
     </values>
   </arg>
 </fCall>
 <fCall name="getCell" global="true" numArgs="2">
-  <arg num="0">
-    <values>
-      <value type="unknown"/>
-    </values>
-  </arg>
-  <arg num="1">
-    <values>
-      <value type="unknown"/>
-    </values>
-  </arg>
-</fCall>
-<fCall name="printf" global="true" numArgs="2">
   <arg num="0">
     <values>
       <value type="unknown"/>
@@ -1218,6 +1311,34 @@
     </values>
   </arg>
   <arg num="3">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="worker" global="true" numArgs="1" impId="0">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="worker" global="true" numArgs="1" impId="0">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="worker" global="true" numArgs="1" impId="0">
+  <arg num="0">
+    <values>
+      <value type="unknown"/>
+    </values>
+  </arg>
+</fCall>
+<fCall name="worker" global="true" numArgs="1" impId="0">
+  <arg num="0">
     <values>
       <value type="unknown"/>
     </values>
